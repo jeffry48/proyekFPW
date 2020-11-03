@@ -17,6 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::any('/home', 'ControllerForm@home');
+
 Route::get('/register', function(){
     return view('components.register');
 });

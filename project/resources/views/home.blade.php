@@ -6,8 +6,8 @@
     <title>Document</title>
 </head>
 <body>
-    @include('includes.header') <br>
-    <div style="background-color: lightyellow; position: static">
+    @include('includes.header')
+    <div style="background-color: lightyellow;">
     @yield('content')
     </div>
     @include('includes.footer')

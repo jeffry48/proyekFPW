@@ -69,12 +69,12 @@ class ControllerHalaman extends Controller
 
         $users = users::where([["username_user",$username]])->get();
         Cookie::queue("loggedin", json_encode($username), 360);
-        return redirect('/login');
+        return redirect('/home');
     }
 
     function logout()
     {
         Cookie::queue(Cookie::forget('loggedin'));
-        return redirect('/login');
+        return redirect('/home');
     }
 }
