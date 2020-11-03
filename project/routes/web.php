@@ -17,10 +17,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/register', function(){
-    return view('components.register');
-});
-Route::post('/regCheck', "ControllerHalaman@regCheck");
-Route::any('/login', "ControllerHalaman@login");
-Route::any('/logout', "ControllerHalaman@logout");
-Route::post('/cekLogin', "ControllerHalaman@cekLogin");
+Route::any('/', 'ControllerForm@index');

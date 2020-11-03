@@ -67,17 +67,14 @@ CREATE TABLE `cicilan` (
 DROP TABLE IF EXISTS `properti`;
 CREATE TABLE `properti` (
   `id_properti` varchar(20) NOT NULL,
-  `id_terbeli` varchar(20) NOT NULL,
-  `id_terjual` varchar(20) NOT NULL,
-  `id_jual` varchar(20) NOT NULL,
-  `id_beli` varchar(20) NOT NULL,
-  `id_kontrak` varchar(20) NOT NULL,
   `jenis_properti` varchar(100) NOT NULL,
   `deskripsi_properti` varchar(200) NOT NULL,
   `alamat_properti` varchar(200) NOT NULL,
   `harga_properti` int(20) NOT NULL,
   `tgl_terdaftar_properti` date NOT NULL,
-  `view_properti` varchar(100) NOT NULL
+  `foto_properti` longtext NOT NULL,
+  `view_properti` varchar(100) NOT NULL,
+  `status` int(1)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -106,6 +103,7 @@ DROP TABLE IF EXISTS `user_properti_beli`;
 CREATE TABLE `user_properti_beli` (
   `id_beli` varchar(12) NOT NULL,
   `id_user` varchar(12) NOT NULL,
+  `id_properti` varchar(20) NOT NULL,
   `pajak_beli` int(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -119,6 +117,7 @@ DROP TABLE IF EXISTS `user_properti_jual`;
 CREATE TABLE `user_properti_jual` (
   `id_jual` varchar(20) NOT NULL,
   `id_user` varchar(20) NOT NULL,
+  `id_properti` varchar(20) NOT NULL,
   `agen_jual` varchar(20) NOT NULL,
   `preparasi_properti_jual` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -133,6 +132,7 @@ DROP TABLE IF EXISTS `user_properti_kontrak`;
 CREATE TABLE `user_properti_kontrak` (
   `id_kontrak` varchar(20) NOT NULL,
   `id_user` varchar(20) NOT NULL,
+  `id_properti` varchar(20) NOT NULL,
   `durasi_kontrak` int(3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
