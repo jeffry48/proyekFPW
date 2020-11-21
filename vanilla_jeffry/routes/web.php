@@ -18,6 +18,7 @@ Route::get('/', function ()
     return view('home');
 });
 Route::get('/beli',"ControllerForm@indexBeli");
+Route::get('/kontrak',"ControllerForm@indexKontrak");
 Route::get('/jual',"ControllerForm@indexJual");
 
 Route::get('properti_{id_properti}', "ControllerForm@showProperti");
@@ -26,3 +27,5 @@ Route::any('/register', "ControllerForm@showRegister");
 Route::post('/cekregister', "ControllerForm@regCheck");
 Route::any('/login', "ControllerForm@showLogin");
 Route::any('/ceklogin', "ControllerForm@cekLogin");
+Route::any('/profile',"ControllerForm@profile");
+Route::post('/updateprofile',"ControllerForm@updateprofile");

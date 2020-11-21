@@ -8,6 +8,9 @@ use App\Rules\dupeEmail;
 use App\Rules\dupeUsername;
 use App\Rules\LoginPass;
 use App\Rules\LoginUsername;
+use App\Rules\UpdateProfCurPass;
+use App\Rules\UpdateProfEmail;
+use App\Rules\UpdateProfUsername;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 
@@ -15,7 +18,11 @@ class ControllerForm extends Controller
 {
     // ini untuk guest
     public function indexBeli(){
-        $data_properti = property::all();
+        $data_properti = property::where("kategori_properti","Beli")->get();
+        return view("beliRumah", ["data_properti" => $data_properti]);
+    }
+    public function indexKontrak(){
+        $data_properti = property::where("kategori_properti","Kontrak")->get();
         return view("beliRumah", ["data_properti" => $data_properti]);
     }
     public function indexJual()
@@ -79,8 +86,8 @@ class ControllerForm extends Controller
             'required' => 'Field tidak boleh kosong',
         ]);
 
-        $users = users::where([["username_user",$username]])->get();
-        Cookie::queue("loggedin", json_encode($username), 360);
+        $users = users::where([["username_user",$username]])->first();
+        Cookie::queue("loggedin", json_encode($users->id_user), 360);
         return redirect('/');
     }
     public function showProperti($idProperti)
@@ -89,6 +96,40 @@ class ControllerForm extends Controller
         return view("detailProperti", ["data_properti" => $data_properti]);
     }
     
+    public function profile()
+    {
+        $loggedin = json_decode(Cookie::get('loggedin'),true);
+        $user = users::where('id_user',$loggedin)->first();
+        return view('profile',["user"=>$user]);
+    }
+    
+    function updateprofile(Request $request){
+        $validatedData = $request->validate([
+            "name" => ["required", "max:24"],
+            "email" => ["required", "regex:/^.+@.+$/i", "regex:/^.*(?=.*[.]).*$/", new UpdateProfEmail()],
+            "phone" => ["required", "regex:/(08)[0-9]{10}/"],
+            "username" => ["required", new UpdateProfUsername()],
+            "pass" => ["required", "min:8", "max:12", "regex:/[a-z]/", "regex:/[A-Z]/"],
+            "repass" => ["required", new UpdateProfCurPass()]
+        ], [
+            "required" => "Field tidak boleh dikosongi!",
+            "name.max" => "Panjang nama tidak boleh lebih dari 24!",
+            "email.regex" => "Email tidak sesuai format!",
+            "pass.min" => "Password minimal 8 karakter!",
+            "pass.max" => "Password maksimal 12 karakter!",
+            "pass.regex" => "Password harus terdiri atas huruf besar dan kecil!"
+        ]);
+
+        // $users = users::where([["username_user",$username]])->get();
+        users::where('phone',$loggedin)->update([
+            ['nama_user' => $request->input('name')],
+            ['no_telp_user'=>$request->input('phone')],
+            ['email_user'=>$request->input('email')],
+            ['username_user'=>$request->input('username')],
+            ['password_user'=>$request->input('pass')]
+            ]);
+        return redirect('/profile');
+    }
     function logout()
     {
         Cookie::queue(Cookie::forget('loggedin'));

@@ -185,6 +185,7 @@
                         </div>
                     </div>
                     <div class="contInput">
+                        {{-- lihat di week 6 andy buat masalah ambil value dr select --}}
                         <select name="jenis" id="" class="input">
                             <option value="rumah">Rumah</option>
                             <option value="tanah">Tanah</option>
