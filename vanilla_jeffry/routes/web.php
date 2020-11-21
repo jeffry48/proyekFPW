@@ -13,16 +13,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', function ()
+{
+    return view('home');
 });
+Route::get('/beli',"ControllerForm@indexBeli");
+Route::get('/jual',"ControllerForm@indexJual");
 
-Route::any('/home', 'ControllerForm@home');
+Route::get('properti_{id_properti}', "ControllerForm@showProperti");
 
-Route::get('/register', function(){
-    return view('components.register');
-});
-Route::post('/regCheck', "ControllerHalaman@regCheck");
-Route::any('/login', "ControllerHalaman@login");
-Route::any('/logout', "ControllerHalaman@logout");
-Route::post('/cekLogin', "ControllerHalaman@cekLogin");
+Route::any('/register', "ControllerForm@showRegister");
+Route::post('/cekregister', "ControllerForm@regCheck");
+Route::any('/login', "ControllerForm@showLogin");
+Route::any('/ceklogin', "ControllerForm@cekLogin");

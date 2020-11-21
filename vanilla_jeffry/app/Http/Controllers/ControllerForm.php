@@ -2,18 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\users;
+use App\property;
 use App\Rules\dupeEmail;
 use App\Rules\dupeUsername;
 use App\Rules\LoginPass;
 use App\Rules\LoginUsername;
-use App\users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
-// use DB;
-use Illuminate\Support\Facades\DB;
 
-class ControllerHalaman extends Controller
+class ControllerForm extends Controller
 {
+    // ini untuk guest
+    public function indexBeli(){
+        $data_properti = property::all();
+        return view("beliRumah", ["data_properti" => $data_properti]);
+    }
+    public function indexJual()
+    {
+        return view('jualRumah');
+    }
+    public function showRegister()
+    {
+        return view('register');
+    }
+    
     function regCheck(Request $request)
     {
         $validatedData = $request->validate([
@@ -37,7 +50,7 @@ class ControllerHalaman extends Controller
         $count = count(users::where("id_user","like","U%")->get());
         $count += 1;
         $temp = "";
-        for ($i=0; $i < 3-($count/10); $i++) { 
+        for ($i=0; $i < 4-(int)pow($count,1/10); $i++) { 
             $temp .= "0";
         }
         
@@ -52,12 +65,11 @@ class ControllerHalaman extends Controller
         return redirect('/login');
     }
 
-    function login(){
-        $loggedin = Cookie::get('loggedin');
-        $loggedin = json_decode($loggedin,true);
-        return view('components.login',["username"=>$loggedin]);
+    public function showLogin()
+    {
+        return view('login');
     }
-
+    
     function cekLogin(Request $request){
         $username = $request->input('username');
         $validatedData = $request->validate([
@@ -69,9 +81,14 @@ class ControllerHalaman extends Controller
 
         $users = users::where([["username_user",$username]])->get();
         Cookie::queue("loggedin", json_encode($username), 360);
-        return redirect('/home');
+        return redirect('/');
     }
-
+    public function showProperti($idProperti)
+    {
+        $data_properti = property::where('id_properti', $idProperti)->first();
+        return view("detailProperti", ["data_properti" => $data_properti]);
+    }
+    
     function logout()
     {
         Cookie::queue(Cookie::forget('loggedin'));
