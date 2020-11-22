@@ -87,7 +87,8 @@ class ControllerForm extends Controller
         ]);
 
         $users = users::where([["username_user",$username]])->first();
-        Cookie::queue("loggedin", json_encode($users->id_user), 360);
+        // Cookie::queue("loggedin", json_encode($users->id_user), 360);
+        session(['loggedin' => $users->id_user]);
         return redirect('/');
     }
     public function showProperti($idProperti)
@@ -98,7 +99,8 @@ class ControllerForm extends Controller
     
     public function profile()
     {
-        $loggedin = json_decode(Cookie::get('loggedin'),true);
+        $loggedin = session('loggedin');
+        // $loggedin = json_decode(Cookie::get('loggedin'),true);
         $user = users::where('id_user',$loggedin)->first();
         return view('profile',["user"=>$user]);
     }
@@ -121,18 +123,22 @@ class ControllerForm extends Controller
         ]);
 
         // $users = users::where([["username_user",$username]])->get();
-        users::where('phone',$loggedin)->update([
-            ['nama_user' => $request->input('name')],
-            ['no_telp_user'=>$request->input('phone')],
-            ['email_user'=>$request->input('email')],
-            ['username_user'=>$request->input('username')],
-            ['password_user'=>$request->input('pass')]
-            ]);
+        
+        $loggedin = session('loggedin');
+        users::where('id_user',$loggedin)->update([
+            'nama_user' => $request->input('name'),
+            'no_telp_user'=>$request->input('phone'),
+            'email_user'=>$request->input('email'),
+            'username_user'=>$request->input('username'),
+            'password_user'=>$request->input('pass')
+        ]);
         return redirect('/profile');
     }
-    function logout()
+    function logout(Request $request)
     {
-        Cookie::queue(Cookie::forget('loggedin'));
-        return redirect('/home');
+        $request->session()->forget('loggedin');
+        // $loggedin = session('loggedin');
+        // Cookie::queue(Cookie::forget('loggedin'));
+        return redirect('/');
     }
 }

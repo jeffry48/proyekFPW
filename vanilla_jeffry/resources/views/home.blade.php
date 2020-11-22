@@ -101,8 +101,8 @@
     <div class="header">
         <div class="logo">
             <div class="logo2">
-                <button class="regLogBtn" onclick="moveTo()">login</button>
-                <button class="regLogBtn" onclick="moveTo()">register</button>
+                <button class="regLogBtn" onclick="moveTo('login')">login</button>
+                <button class="regLogBtn" onclick="moveTo('register')">register</button>
             </div>
         </div>
         <div class="nav">
