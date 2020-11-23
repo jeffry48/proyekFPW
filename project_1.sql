@@ -1,4 +1,14 @@
+-- phpMyAdmin SQL Dump
+-- version 4.9.0.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Nov 12, 2020 at 01:12 PM
+-- Server version: 10.4.6-MariaDB
+-- PHP Version: 7.3.9
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -67,18 +77,27 @@ CREATE TABLE `cicilan` (
 DROP TABLE IF EXISTS `properti`;
 CREATE TABLE `properti` (
   `id_properti` varchar(20) NOT NULL,
-  `id_terbeli` varchar(20) NOT NULL,
-  `id_terjual` varchar(20) NOT NULL,
-  `id_jual` varchar(20) NOT NULL,
-  `id_beli` varchar(20) NOT NULL,
-  `id_kontrak` varchar(20) NOT NULL,
   `jenis_properti` varchar(100) NOT NULL,
+  `kategori_properti` varchar(100) NOT NULL,
   `deskripsi_properti` varchar(200) NOT NULL,
+  `jumlah_ruangan_properti` int(100) NOT NULL,
+  `jumlah_kamar_mandi_properti` int(100) NOT NULL,
   `alamat_properti` varchar(200) NOT NULL,
   `harga_properti` int(20) NOT NULL,
   `tgl_terdaftar_properti` date NOT NULL,
-  `view_properti` varchar(100) NOT NULL
+  `foto_properti` longtext NOT NULL,
+  `view_properti` varchar(100) NOT NULL,
+  `status` int(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `properti`
+--
+
+INSERT INTO `properti` (`id_properti`, `jenis_properti`, `kategori_properti`, `deskripsi_properti`, `jumlah_ruangan_properti`, `jumlah_kamar_mandi_properti`, `alamat_properti`, `harga_properti`, `tgl_terdaftar_properti`, `foto_properti`, `view_properti`, `status`) VALUES
+('P0001', 'Rumah', '', 'Rumah di jalan besar', 0, 0, 'jl. Rimbun no 20', 100000000, '2020-11-05', '', '231', 0),
+('P0002', 'Tanah', '', 'Tanah besar di jalan Besar', 0, 0, 'Jl. lawu raya no 3B', 200000000, '2020-11-05', '', '151', 0),
+('P0003', 'Rumah', '', 'Rumah kedua', 0, 0, 'jl. Rawon', 300000000, '2020-11-05', '', '561', 0);
 
 -- --------------------------------------------------------
 
@@ -106,6 +125,7 @@ DROP TABLE IF EXISTS `user_properti_beli`;
 CREATE TABLE `user_properti_beli` (
   `id_beli` varchar(12) NOT NULL,
   `id_user` varchar(12) NOT NULL,
+  `id_properti` varchar(20) NOT NULL,
   `pajak_beli` int(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -119,6 +139,7 @@ DROP TABLE IF EXISTS `user_properti_jual`;
 CREATE TABLE `user_properti_jual` (
   `id_jual` varchar(20) NOT NULL,
   `id_user` varchar(20) NOT NULL,
+  `id_properti` varchar(20) NOT NULL,
   `agen_jual` varchar(20) NOT NULL,
   `preparasi_properti_jual` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -133,6 +154,7 @@ DROP TABLE IF EXISTS `user_properti_kontrak`;
 CREATE TABLE `user_properti_kontrak` (
   `id_kontrak` varchar(20) NOT NULL,
   `id_user` varchar(20) NOT NULL,
+  `id_properti` varchar(20) NOT NULL,
   `durasi_kontrak` int(3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
