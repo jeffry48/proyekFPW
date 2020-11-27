@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,9 +18,36 @@ Route::get('/', function ()
 {
     return view('home');
 });
+Route::any('/register', "ControllerForm@showRegister");
+Route::post('/cekregister', "ControllerForm@regCheck");
+Route::any('/login', "ControllerForm@showLogin");
+Route::any('/ceklogin', "ControllerForm@cekLogin");
+
+////////////////////////////////////////////////////////////////////////
+
 Route::get('/beli',"ControllerForm@indexBeli");
+Route::get('/kontrak',"ControllerForm@indexKontrak");
 Route::get('/jual',"ControllerForm@indexJual");
 
+Route::get('/showCicilan', function () {
+    return view('cicilan');
+});
+Route::post('/insertCicilan', "controllerJeffry@insertCicilan");
+
 Route::get('properti_{id_properti}', "ControllerForm@showProperti");
-Route::any('/register', "ControllerForm@showRegister");
-Route::any('/login', "ControllerForm@showLogin");
+Route::get('showPembayaranBeli_{id_properti}', "controllerJeffry@showPembayaranBeli");
+
+Route::get('beli_rumah','BeliController@beli_rumah');
+Route::post('search','BeliController@search');
+Route::post('kontrak_rumah','BeliController@kontrak_rumah');
+
+Route::group(['middleware' => 'isLogin' ], function (){
+    Route::any('/profile',"ControllerForm@profile");
+    Route::any('/logout', "ControllerForm@logout");
+    Route::post('/updateprofile',"ControllerForm@updateprofile");
+    Route::get('/myProperti', function () {
+        return view('myProperty');
+    });
+    Route::any('/jualProperti', 'ControllerForm@jualProperty');
+
+});

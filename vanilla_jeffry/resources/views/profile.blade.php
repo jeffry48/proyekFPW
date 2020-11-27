@@ -61,14 +61,6 @@
             height: 100%;
             float:left;
             background-color: white;
-            overflow: auto;
-        }
-        .backgroundImg{
-            width: inherit;
-            height: inherit;
-            background-image: linear-gradient(to bottom,  rgba(0, 0, 0, 0.52), rgba(255, 255, 255, 1)), url('hotel.jpg');
-            background-size: cover;
-            background-position: center;
         }
         .contentHeader{
             margin-top: 20px;
@@ -84,10 +76,9 @@
         }
         .gambarImg{
             width: 10%;
-            height: 160%;
-            background-color: lightblue;
+            height: 100%;
+            background-color: brown;
             float: left;
-            position: static;
         }
         .text{
             margin-left: 100px;
@@ -104,7 +95,7 @@
             float: left;
         }
         .registerBtn{
-            width: 50%;
+            width: 70%;
             background-color: lightblue;
             border: solid lightblue 1px;
             border-radius: 10px;
@@ -118,6 +109,16 @@
     </script>
 </head>
 <body>
+    @if ($errors->any())
+        <style>
+            .content{
+                overflow: auto;
+            }
+            .gambarImg{
+                height: 140%;
+            }
+        </style>
+    @endif
     <div class="header">
         <div class="header">
             <div class="headerContent">
@@ -140,78 +141,83 @@
 
     <div class="content">
         <div class="contentText">
-            <div class="gambarImg"></div>
 
-                <h1>Daftarkan Rumah Untuk Dijual</h1>
+            <div class="gambarImg"></div>
+                <h1>Profile</h1>
+                <button onclick="moveTo('myProperti')">lihat properti jual</button>
+                <button onclick="moveTo('logout')">logout</button>
                 <hr>
-                <form action="jualProperti" method="POST">
+                <form action="/updateprofile" method="POST">
                     @csrf
                     <div class="text">
-                        jenis properti:
+                        nama lengkap:
                     </div>
-                    <div class="input">
-                        <select name="jenis" id="" style="font-size: 16pt">
-                            <option value="rumah">Rumah</option>
-                            <option value="tanah">Tanah</option>
-                            <option value="apartemen">Apartemen</option>
-                        </select>
-                    </div>
+                    <input type="text" name="name" id="" class="input" value="{{$user->nama_user}}"> <br>
+                    @error('name')
+                        <div class="text" style="color: red">
+
+                        </div>
+                        <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div> <br>
+                    @enderror
 
                     <div class="text">
-                        kategori:
+                        no telp:
                     </div>
-                    <div class="input">
-                        <select name="kategori" id="" style="font-size: 16pt">
-                            <option value="beli">Beli</option>
-                            <option value="kontrak">Kontrak</option>
-                        </select>
-                    </div>
+                    <input type="text" name="phone" id="" class="input" value="{{$user->no_telp_user}}"> <br>
+                    @error('phone')
+                        <div class="text" style="color: red">
+
+                        </div>
+                        <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                    @enderror
 
                     <div class="text">
-                        deskripsi
+                        email:
                     </div>
-                    <textarea name="deskripsi" id="" cols="30" rows="5" class="input" style="font-size: 12pt;"></textarea> <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <div class="text">
-                        preparasi properti
-                    </div>
-                    <textarea name="preparasi" id="" cols="30" rows="5" class="input" style="font-size: 12pt;"></textarea> <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <div class="text">
-                        jumlah ruangan
-                    </div>
-                    <input type="text" name="jumRuangan" id="" class="input"><br>
-                    <div class="text">
-                        jumlah kamar mandi
-                    </div>
-                    <input type="text" name="jumKamarMandi" id="" class="input"><br>
-                    <div class="text">
-                        alamat
-                    </div>
-                    <input type="text" name="alamat" id="" class="input"><br>
-                    <div class="text">
-                        harga
-                    </div>
-                    <input type="text" name="harga" id="" class="input"><br>
-                    <div class="text">
-                        foto
-                    </div>
-                    <div class="input">
-                        <input type="file" name="foto" id=""> <br>
-                    </div>
+                    <input type="text" name="email" id="" class="input" value="{{$user->email_user}}"> <br>
+                    @error('email')
+                        <div class="text" style="color: red">
+
+                        </div>
+                        <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                    @enderror
 
                     <div class="text">
-                        <input type="submit" value="submit" class="registerBtn">
+                        username
                     </div>
+                    <input type="text" name="username" id="" class="input" value="{{$user->username_user}}"> <br>
+                    @error('username')
+                        <div class="text" style="color: red">
 
+                        </div>
+                        <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                    @enderror
+
+                    <div class="text">
+                        password
+                    </div>
+                    <input type="password" name="pass" id="" class="input" value="{{$user->password_user}}"> <br>
+                    @error('pass')
+                        <div class="text" style="color: red">
+
+                        </div>
+                        <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                    @enderror
+
+                    <div class="text">
+                        current password
+                    </div>
+                        <input type="password" name="repass" id="" class="input"> <br>
+                    @error('repass')
+                    <div class="text" style="color: red">
+
+                    </div>
+                    <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                    @enderror
+
+                    <div class="text">
+                        <input type="submit" value="update profile" class="registerBtn">
+                    </div>
                 </form>
 
         </div>
