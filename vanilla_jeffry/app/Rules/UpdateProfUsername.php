@@ -28,8 +28,7 @@ class UpdateProfUsername implements Rule
     public function passes($attribute, $value)
     {
         //
-        // $loggedin = json_decode(Cookie::get('loggedin'),true);
-        $loggedin = session('loggedin');
+        $loggedin = json_decode(Cookie::get('loggedin'),true);
         $users = users::where([
             ['id_user','!=',$loggedin],
             ['username_user', $value],

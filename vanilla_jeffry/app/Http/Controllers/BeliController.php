@@ -15,6 +15,7 @@ class BeliController extends Controller
     public function beli_rumah(Request $request){
         $id_properti = $request->id_properti;
         $id_user = $request->id_user;
+
         $check = users::where('id_user',$id_user)->count();
         // if($check>0){
             $properti = property::find($id_properti);
@@ -27,45 +28,18 @@ class BeliController extends Controller
             // $data->harga_terbeli = $harga;
             // $data->save();
 
-            $countBeli = UserBeliModel::count();
-            $countBeli++;
-
-            if($countBeli < 10){
-                $id_beli = "B000" . $countBeli;
-            }
-            else if($countBeli >= 10 && $countBeli < 100){
-                $id_beli = "B00" . $countBeli;
-            }
-            else{
-                $id_beli = "B0" . $countBeli;
-            }
-
             $data = new UserBeliModel();
-            $data->id_beli = $id_beli;
+            $data->id_beli = "";
             $data->id_user = $id_user;
             $data->id_properti = $id_properti;
-            $data->pajak_beli = $harga*(10/100);
-            $data->total_beli = $harga+($harga*(10/100));
-            $data->pesan_untuk_penjual = $request->pesanPembeli;
+            $data->pajak_beli = $harga*10/100;
+            $data->save();
 
-            if($request->jenisPembayaran=='kredit'){
-                session(['id_beli'=>$id_beli]);
-                session(['id_user'=>$id_user]);
-                session(['id_properti'=>$id_properti]);
-                session(['pajak_beli'=>$harga*(10/100)]);
-                session(['harga'=>$harga]);
-                session(['total_beli'=>$harga+($harga*(10/100))]);
-                return redirect('showCicilan');
-            }
-            else if($request->jenisPembayaran=='cash'){
-                $data->save();
-
-                echo "<script>alert('Berhasil dibeli!')</script>";
-                // return redirect('properti_'.$id_properti);
-                $data_properti = property::all()->where('id_properti', $id_properti)->all();
-                sort($data_properti);
-                return view("detailProperti", ["data_properti" => $data_properti[0]]);
-            }
+            echo "<script>alert('Berhasil dibeli!')</script>";
+            // return redirect('properti_'.$id_properti);
+            $data_properti = property::all()->where('id_properti', $id_properti)->all();
+            sort($data_properti);
+            return view("detailProperti", ["data_properti" => $data_properti[0]]);
         // }
         // else{
         //     echo "<script>alert('Login terlebih dahulu!')</script>";
