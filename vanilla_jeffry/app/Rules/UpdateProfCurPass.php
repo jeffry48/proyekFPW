@@ -28,9 +28,9 @@ class UpdateProfCurPass implements Rule
     public function passes($attribute, $value)
     {
         //
-        $loggedin = json_decode(Cookie::get('loggedin'),true);
+        $loggedin = session('loggedin');
         $users = users::where([
-            ['id_user','!=',$loggedin],
+            ['id_user',$loggedin],
             ['password_user', $value],
             ])->get();
         if(count($users) > 0){

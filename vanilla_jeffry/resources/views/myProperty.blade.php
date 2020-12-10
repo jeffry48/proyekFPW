@@ -173,7 +173,7 @@
                 </div>
                 @isset($data_properti)
                     @foreach ($data_properti as $properti)
-                    <div class="item" onclick="moveTo('properti_{{$properti->id_properti}}')">
+                    <div class="item" onclick="moveTo('requested_{{$properti->id_properti}}')">
                         <div class="itemHeader" style="font-size: 18pt">
                             {{$properti->alamat_properti}}
                         </div>

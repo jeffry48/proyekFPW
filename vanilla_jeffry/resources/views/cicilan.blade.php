@@ -84,10 +84,9 @@
         }
         .gambarImg{
             width: 10%;
-            height: 160%;
+            height: 120%;
             background-color: lightblue;
             float: left;
-            position: static;
         }
         .text{
             margin-left: 100px;
@@ -103,12 +102,15 @@
             width: 40%;
             float: left;
         }
-        .registerBtn{
-            width: 50%;
+        .submitBtn{
+            margin-left: 100px;
+            margin-top: 50px;
+            font-size: 12pt;
+            width: 20%;
+            float: left;
             background-color: lightblue;
             border: solid lightblue 1px;
             border-radius: 10px;
-            font-size: 16pt;
         }
     </style>
     <script>
@@ -118,6 +120,12 @@
     </script>
 </head>
 <body>
+    @php
+        // session(['login' => 'test']);
+        $user = session('loggedin');
+        $activity = session('activity');
+        // echo '<script>alert("'.$user.'")</script>';
+    @endphp
     <div class="header">
         <div class="header">
             <div class="headerContent">
@@ -142,88 +150,38 @@
         <div class="contentText">
             <div class="gambarImg"></div>
 
-                <h1>Daftarkan Rumah Untuk Dijual</h1>
+            <form action="insertCicilan" method="POST">
+                @csrf
+
+                <h1>cicilan</h1>
                 <hr>
-                <form action="jualProperti" method="POST">
-                    @csrf
-                    <div class="text">
-                        jenis properti:
-                    </div>
-                    <div class="input">
-                        <select name="jenis" id="" style="font-size: 16pt">
-                            <option value="rumah">Rumah</option>
-                            <option value="tanah">Tanah</option>
-                            <option value="apartemen">Apartemen</option>
-                        </select>
-                    </div>
+                <div class="text">
+                    durasi
+                </div>
+                <input type="text" name="durasi" id="" class="input" placeholder="dalam bulan">
 
-                    <div class="text">
-                        kategori:
-                    </div>
-                    <div class="input">
-                        <select name="kategori" id="" style="font-size: 16pt">
-                            <option value="beli">Beli</option>
-                            <option value="kontrak">Kontrak</option>
-                        </select>
-                    </div>
+                <div class="text">
+                    besar bunga:
+                </div>
+                <div class="input">
+                    @php
+                        $bunga=session('harga')*(10/100);
+                        echo $bunga;
+                    @endphp
+                </div>
+                <div class="text">
+                    harga total:
+                </div>
+                <div class="input">
+                    @php
+                        echo session('harga')+$bunga+session('pajak_beli');
+                    @endphp
+                </div>
+                <input type="hidden" name="bungaCicilan" value="{{$bunga}}">
+                <input type="submit" value="submit" class="submitBtn">
 
-                    <div class="text">
-                        deskripsi
-                    </div>
-                    <textarea name="deskripsi" id="" cols="30" rows="5" class="input" style="font-size: 12pt;"></textarea> <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <div class="text">
-                        preparasi properti
-                    </div>
-                    <textarea name="preparasi" id="" cols="30" rows="5" class="input" style="font-size: 12pt;"></textarea> <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <div class="text">
-                        jumlah ruangan
-                    </div>
-                    <input type="text" name="jumRuangan" id="" class="input"><br>
-                    <div class="text">
-                        jumlah kamar mandi
-                    </div>
-                    <input type="text" name="jumKamarMandi" id="" class="input"><br>
-                    <div class="text">
-                        alamat
-                    </div>
-                    <input type="text" name="alamat" id="" class="input"><br>
-                    <div class="text">
-                        harga
-                    </div>
-                    <input type="text" name="harga" id="" class="input"><br>
-                    <div class="text">
-                        foto
-                    </div>
-                    <div class="input">
-                        <input type="file" name="foto" id=""> <br>
-                    </div>
-
-                    <div class="text">
-                        <input type="submit" value="submit" class="registerBtn">
-                    </div>
-
-                </form>
-
+            </form>
         </div>
     </div>
-
-    {{-- <div class="footer">
-        <div class="copyright">
-
-        </div>
-        <div class="noTelp">
-
-        </div>
-    </div> --}}
 </body>
 </html>

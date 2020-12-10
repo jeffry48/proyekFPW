@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Carbon;
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,19 +11,24 @@
     <title>Document</title>
     <style>
         #navButtons{
-            /* float: right; */
-            /* margin-right: 5px;
-            margin-top: 2px; */
             background-color: lightsalmon;
-            border: solid darkgray 1px;x
+            border: solid darkgray 1px;
             width: 25%;
+            height: 100%;
             border-radius: 5px;
             font-size: 15pt;
-            margin-top: 70px;
         }
         #navButtons:hover{
             background-color: salmon;
             cursor: pointer;
+        }
+        .headerContent{
+            height: 70%;
+            width: 100%;
+        }
+        .nav{
+            height: 30%;
+            width: 100%;
         }
         .logo2{
             width: 20%;
@@ -28,12 +37,14 @@
             /* background-color: red; */
         }
         .regLogBtn{
-            width: 49%;
+            width: 10%;
             height: 30px;
             margin-top: 30px;
+            margin-right: 20px;
             background-color: lightsalmon;
             border: solid black 1px;
             border-radius: 10px;
+            float: right;
         }
         .header{
             width: 99vw;
@@ -42,21 +53,7 @@
         }
         .content{
             width: 99vw;
-            height: 72vh;
-        }
-        .footer{
-            width: 99vw;
-            height: 10vh;
-            background-color: lightgreen;
-        }
-        .copyright{
-            font-size: 24pt;
-            float: left;
-        }
-        .noTelp{
-            float: right;
-            text-align: right;
-            font-size: 18pt;
+            height: 82vh;
         }
         .picture{
             width: 40%;
@@ -67,15 +64,7 @@
             width: 100%;
             height: 100%;
             float:left;
-            background-color: white;
-            overflow: hidden;
-        }
-        .backgroundImg{
-            width: 99vw;
-            height: 69vh;
-            background-image: linear-gradient(to top,  rgba(0, 0, 0, 0.52), rgba(255, 255, 255, 1)), url('hotel.jpg');
-            background-size: cover;
-            background-position: center;
+            overflow: auto;
         }
         .contentHeader{
             margin-top: 20px;
@@ -100,6 +89,32 @@
             margin-left: 1%;
             margin-top: 0.5%;
         }
+        .pembayaranBtn{
+            background-color: lightblue;
+            border: solid lightblue 1px;
+            border-radius: 10px;
+        }
+        .slider{
+            overflow: auto;
+            width: 100%;
+        }
+        .cardbox{
+            float: left;
+            width: 97%;
+            padding : 1%;
+            background-color: coral;
+        }
+        .headerRec{
+            font-size: 16pt;
+        }
+        .contentRec{
+            float: left;
+        }
+        .picRec{
+            float: left;
+            height: 100px;
+            width: 100px;
+        }
     </style>
     <script>
         function moveTo(link){
@@ -109,22 +124,26 @@
 </head>
 <body>
     @php
-        // session(['login' => 'test']);
-        $user = session('login', 'test');
-        $activity = session('activity');
-        // echo '<script>alert("'.$user.'")</script>';
+        if(session('pesan')!=null){
+            echo "<script>alert('pembelian properti sedang diproses')</script>";
+            session()->forget('pesan');
+        }
     @endphp
     <div class="header">
-        <div class="logo">
-            <div class="logo2">
-                <button class="regLogBtn" onclick="moveTo()">login</button>
-                <button class="regLogBtn" onclick="moveTo()">register</button>
-            </div>
+        <div class="headerContent">
+            @if (session('loggedin')!=null)
+                <button class="regLogBtn" onclick="moveTo('profile')">profile</button>
+            @else
+                <button class="regLogBtn" onclick="moveTo('login')">login</button>
+                <button class="regLogBtn" onclick="moveTo('register')">register</button>
+            @endif
         </div>
         <div class="nav">
-            <button name="" id="navButtons" onclick="moveTo('beli')" style="width: 25%;">beli Rumah</button>
-            <button name="" id="navButtons" onclick="moveTo('kontrak')"style="width: 25%;">kontrak Rumah</button>
-            <button name="" id="navButtons" onclick="moveTo('jual')"style="width: 25%;">Jual Rumah</button>
+            <button name="" id="navButtons" onclick="moveTo('beli')">Beli Rumah</button>
+            <button name="" id="navButtons" onclick="moveTo('kontrak')">Kontrak Rumah</button>
+            @if (session('loggedin')!=null)
+                <button name="" id="navButtons" onclick="moveTo('jual')">Jual Rumah</button>
+            @endif
         </div>
     </div>
 
@@ -142,61 +161,93 @@
                         {{ $data_properti->alamat_properti }}
                     </div>
                     <div class="textItem">
-                        Rp {{ $data_properti->harga_properti }}
+                        {{ $data_properti->harga_properti }}
                     </div>
                     <div class="textItem">
                         {{ $data_properti->deskripsi_properti }}
+                    </div>
+                    <div class="textItem">
+                        ruangan: {{ $data_properti->jumlah_ruangan_properti }}
+                    </div>
+                    <div class="textItem">
+                        kamar mandi:  {{ $data_properti->jumlah_kamar_mandi_properti }}
                     </div>
                     <div class="textItem">
                         View: {{ $data_properti->view_properti }}
                     </div>
                     <div class="textItem">
                         <?php
+                            $cnow = Carbon::now();
+                            $since = Carbon::parse($data_properti->tgl_terdaftar_properti);
 
-                            $now = time(); // or your date as well
+                            $diff = $since->diffInDays($cnow);
+                            // echo "<script>alert(".$diff.")</script>";
+
+                            $now = time();
                             $your_date = strtotime($data_properti->tgl_terdaftar_properti);
                             $datediff = $now - $your_date;
                         ?>
-                        @if (round($datediff / (60 * 60 * 24))<30)
-                            terdaftar: {{ round($datediff / (60 * 60 * 24)) }} hari yang lalu
-                        @else
-                            terdaftar: {{ round($datediff / (60 * 60 * 24))/30 }} bulan yang lalu
+                        @if ($diff/30>1)
+                            Terdaftar : {{round($diff/30)}} bulan {{$diff%30}} hari yang lalu
+                        @elseif($diff%30==0)
+                            Terdaftar : {{round($diff/30)}} bulan yang lalu
+                        @elseif ($diff/30<1)
+                            Terdaftar : {{$diff}} hari yang lalu
                         @endif
                     </div>
                     <div class="textItem">
-                        @php
-                            if($activity=="Beli"){
-                                echo '<form action="/beli_rumah" method="POST">
-                                    '.csrf_field().'
-                            <input type="hidden" name="id_properti" value="'.$data_properti->id_properti.'">
-                            <input type="hidden" name="id_user" value="'.$user.'">
-                            <input type="submit" value="Beli">
-                        </form>';
-                            }
-                            else if($activity=="Kontrak"){
-                                echo '<form action="/kontrak_rumah" method="post">
-                                    '.csrf_field().'
-                            <input type="hidden" name="id_properti" value="'.$data_properti->id_properti.'">
-                            <input type="hidden" name="id_user" value="'.$user.'">
-                            Durasi : <input type="number" name="durasi" id=""> (dalam bulan)
-                            <input type="submit" value="kontrak">
-                        </form>';
-                            }
-                        @endphp
+                        @if (session('loggedin')!=null)
+                            @if ($data_properti->kategori_properti=='beli')
+                                <button class="pembayaranBtn" onclick="moveTo('showPembayaranBeli_{{$data_properti->id_properti}}')">pembayaran beli</button>
+                            @else
+                                <button class="pembayaranBtn" onclick="moveTo('showPembayaranKontrak_{{$data_properti->id_properti}}')">pembayaran kontrak</button>
+                            @endif
+                        @endif
                     </div>
+                    @php
+                        $jenis = $data_properti->jenis_properti;
+                        // echo "<script>alert(".$jenis.")</script>";
+                        $list = DB::table('properti')->where('jenis_properti', $jenis)->get();
+                        if(count($list)>0){
+                            $rekomendasi = $list;
+                        }
+                        $ctr_rekom = 0;
+                    @endphp
+
+                    @isset($rekomendasi)
+                    <div class="textItem">
+                        <h3>Rekomendasi</h3>
+                        <div class="slider">
+                            @foreach ($rekomendasi as $item)
+                                @if ($ctr_rekom<4)
+                                    @if ($item->id_properti!=$data_properti->id_properti)
+                                    <div></div>
+                                    <div class="cardbox" onclick="moveTo('properti_{{$item->id_properti}}')">
+                                        <img src="" alt="" class="picRec">
+                                        <div class="contentRec">
+                                            <div class="headerRec">
+                                                <div>{{$item->alamat_properti}}</div>
+                                            </div>
+                                            <div>jenis properti: {{$item->jenis_properti}}</div>
+                                            <div>{{$item->deskripsi_properti}}</div>
+                                            <div style="font-size: 15pt;">{{$item->harga_properti}}</div>
+                                        </div>
+                                    </div>
+                                    @php
+                                        $ctr_rekom++;
+                                    @endphp
+                                    @endif
+
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                    @endisset
+
                 @endisset
             </div>
-            <div class="backgroundImg"></div>
         </div>
     </div>
 
-    <div class="footer">
-        <div class="copyright">
-
-        </div>
-        <div class="noTelp">
-
-        </div>
-    </div>
 </body>
 </html>

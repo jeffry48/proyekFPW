@@ -84,10 +84,9 @@
         }
         .gambarImg{
             width: 10%;
-            height: 160%;
+            height: 120%;
             background-color: lightblue;
             float: left;
-            position: static;
         }
         .text{
             margin-left: 100px;
@@ -103,12 +102,14 @@
             width: 40%;
             float: left;
         }
-        .registerBtn{
-            width: 50%;
+        .submitBtn{
+            margin-top: 20px;
+            font-size: 12pt;
+            width: 100%;
+            float: left;
             background-color: lightblue;
             border: solid lightblue 1px;
             border-radius: 10px;
-            font-size: 16pt;
         }
     </style>
     <script>
@@ -118,6 +119,10 @@
     </script>
 </head>
 <body>
+    @php
+        $user = session('loggedin');
+        $activity = session('activity');
+    @endphp
     <div class="header">
         <div class="header">
             <div class="headerContent">
@@ -141,89 +146,56 @@
     <div class="content">
         <div class="contentText">
             <div class="gambarImg"></div>
-
-                <h1>Daftarkan Rumah Untuk Dijual</h1>
+            <form action="/kontrak_rumah" method="post">
+                @csrf
+                <h1>pembayaran</h1>
                 <hr>
-                <form action="jualProperti" method="POST">
-                    @csrf
-                    <div class="text">
-                        jenis properti:
-                    </div>
-                    <div class="input">
-                        <select name="jenis" id="" style="font-size: 16pt">
-                            <option value="rumah">Rumah</option>
-                            <option value="tanah">Tanah</option>
-                            <option value="apartemen">Apartemen</option>
-                        </select>
-                    </div>
-
-                    <div class="text">
-                        kategori:
-                    </div>
-                    <div class="input">
-                        <select name="kategori" id="" style="font-size: 16pt">
-                            <option value="beli">Beli</option>
-                            <option value="kontrak">Kontrak</option>
-                        </select>
-                    </div>
-
-                    <div class="text">
-                        deskripsi
-                    </div>
-                    <textarea name="deskripsi" id="" cols="30" rows="5" class="input" style="font-size: 12pt;"></textarea> <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <div class="text">
-                        preparasi properti
-                    </div>
-                    <textarea name="preparasi" id="" cols="30" rows="5" class="input" style="font-size: 12pt;"></textarea> <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <div class="text">
-                        jumlah ruangan
-                    </div>
-                    <input type="text" name="jumRuangan" id="" class="input"><br>
-                    <div class="text">
-                        jumlah kamar mandi
-                    </div>
-                    <input type="text" name="jumKamarMandi" id="" class="input"><br>
-                    <div class="text">
-                        alamat
-                    </div>
-                    <input type="text" name="alamat" id="" class="input"><br>
-                    <div class="text">
-                        harga
-                    </div>
-                    <input type="text" name="harga" id="" class="input"><br>
-                    <div class="text">
-                        foto
-                    </div>
-                    <div class="input">
-                        <input type="file" name="foto" id=""> <br>
-                    </div>
-
-                    <div class="text">
-                        <input type="submit" value="submit" class="registerBtn">
-                    </div>
-
-                </form>
-
+                <div class="text">
+                    Pembayaran
+                </div>
+                <div class="input">
+                    <select name="jenisPembayaran" id="" style="font-size: 16pt">
+                        <option value="cash">cash</option>
+                        <option value="kredit">kredit</option>
+                    </select>
+                </div>
+                <div class="text">
+                    Pajak
+                </div>
+                <div class="input">
+                    <?php
+                        $pajak=$data_properti->harga_properti*(10/100);
+                        echo $pajak;
+                    ?>
+                </div>
+                <div class="text">
+                    harga total
+                </div>
+                <div class="input">
+                    <?php
+                        $total=$data_properti->harga_properti+$pajak;
+                        echo $total;
+                    ?>
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <div class="text">
+                    Tanggal :
+                </div>
+                <input type="date" id="" name="tgl_awal" class="input">
+                <div class="text">
+                    Durasi :
+                </div>
+                <input type="number" name="durasi" id="" class="input" placeholder="dalam bulan">
+                <div class="text">
+                    <input type="hidden" name="id_properti" value="{{$data_properti->id_properti}}">
+                    <input type="hidden" name="id_user" value="{{$user}}">
+                    <input type="submit" value="kontrak" class="submitBtn">
+                </div>
         </div>
     </div>
-
-    {{-- <div class="footer">
-        <div class="copyright">
-
-        </div>
-        <div class="noTelp">
-
-        </div>
-    </div> --}}
 </body>
 </html>
