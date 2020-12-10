@@ -11,21 +11,139 @@ use App\Rules\LoginUsername;
 use App\Rules\UpdateProfCurPass;
 use App\Rules\UpdateProfEmail;
 use App\Rules\UpdateProfUsername;
+<<<<<<< Updated upstream
+=======
+use App\UserBeliModel;
+>>>>>>> Stashed changes
 use App\users_sell_property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 
 class ControllerForm extends Controller
 {
+<<<<<<< Updated upstream
     // ini untuk guest
     public function indexBeli(){
         $data_properti = property::where("kategori_properti","Beli")->get();
+=======
+    //octa
+    public function jualProperty(Request $req)
+    {
+        $data_properti = property::all();
+        $countDataPropertiJual = users_sell_property::count();
+        $countDataPropertiJual++;
+
+        if($countDataPropertiJual < 10){
+            $idJual = "J000" . $countDataPropertiJual;
+        }
+        else if($countDataPropertiJual >= 10 && $countDataPropertiJual < 100){
+            $idJual = "J00" . $countDataPropertiJual;
+        }
+        else{
+            $idJual = "J0" . $countDataPropertiJual;
+        }
+
+        $ada = false;
+        foreach ($data_properti as $properti){
+            if($properti->alamat_properti == $req->alamat){
+                // sudah pernah ada di database properti
+                $ada = true;
+                $insertData = [
+                    "id_jual" => $idJual,
+                    "id_user" => session('loggedin'),
+                    "id_properti" => $properti->id_properti,
+                    "preparasi_properti_jual" => $req->preparasi
+                ];
+                users_sell_property::create($insertData);
+
+                $idCek=$properti->id_properti;
+            }
+        }
+
+        if($ada){
+            $updateProp=property::all()
+            ->where('id_properti', $idCek)->all();
+            sort($updateProp);
+
+            $updateProp[0]->jenis_properti=$req->jenis;
+            $updateProp[0]->kategori_properti=$req->kategori;
+            $updateProp[0]->deskripsi_properti=$req->deskripsi;
+            $updateProp[0]->jumlah_ruangan_properti=$req->jumRuangan;
+            $updateProp[0]->jumlah_kamar_mandi_properti=$req->jumKamarMandi;
+            $updateProp[0]->harga_properti=$req->harga;
+            $updateProp[0]->tgl_terdaftar_properti=now();
+            $updateProp[0]->foto_properti=$req->foto;
+            $updateProp[0]->view_properti=0;
+            $updateProp[0]->status=1;
+
+            $updateProp[0]->save();
+
+        }
+
+        if(!$ada){
+            $countDataProperti = property::count();
+            $countDataProperti++;
+
+            if($countDataProperti < 10){
+                $idProperti = "P000" . $countDataProperti;
+            }
+            else if($countDataProperti >= 10 && $countDataProperti < 100){
+                $idProperti = "P00" . $countDataProperti;
+            }
+            else{
+                $idProperti = "P0" . $countDataProperti;
+            }
+
+            $insertData = [
+                "id_properti" => $idProperti,
+                "jenis_properti" => $req->jenis,
+                "kategori_properti" => $req->kategori,
+                "deskripsi_properti" => $req->deskripsi,
+                "jumlah_ruangan_properti" => $req->jumRuangan,
+                "jumlah_kamar_mandi_properti" => $req->jumKamarMandi,
+                "alamat_properti" => $req->alamat,
+                "harga_properti" => $req->harga,
+                "tgl_terdaftar_properti" => now(),
+                "foto_properti" => $req->foto,
+                "view_properti" => 0,
+                "status" => 1
+            ];
+
+            property::create($insertData);
+
+            $insertData = [
+                "id_jual" => $idJual,
+                "id_user" => session('loggedin'),
+                "id_properti" => $idProperti,
+                "preparasi_properti_jual" => $req->preparasi
+            ];
+
+            users_sell_property::create($insertData);
+        }
+
+        return view("jualRumah");
+    }
+
+    // Adrian //////////////////////////////////////////////////////////////////
+    public function indexBeli(){
+        $data_properti = property::where("kategori_properti","Beli")->get();
+        session(['activity' => 'Beli']);
+>>>>>>> Stashed changes
         return view("beliRumah", ["data_properti" => $data_properti]);
     }
     public function indexKontrak(){
         $data_properti = property::where("kategori_properti","Kontrak")->get();
+<<<<<<< Updated upstream
         return view("beliRumah", ["data_properti" => $data_properti]);
     }
+=======
+        session(['activity' => 'Kontrak']);
+        return view("beliRumah", ["data_properti" => $data_properti]);
+    }
+    /////////////////////////////////////////////////////////////////////////////
+
+    //buatan alex:
+>>>>>>> Stashed changes
     public function indexJual()
     {
         return view('jualRumah');
@@ -115,7 +233,11 @@ class ControllerForm extends Controller
             "pass" => ["required", "min:8", "max:12", "regex:/[a-z]/", "regex:/[A-Z]/"],
             "repass" => ["required", new UpdateProfCurPass()]
         ], [
+<<<<<<< Updated upstream
             "required" => "Field tidak boleh dikosongi!",
+=======
+            "required" => "Field :attribute tidak boleh dikosongi!",
+>>>>>>> Stashed changes
             "name.max" => "Panjang nama tidak boleh lebih dari 24!",
             "email.regex" => "Email tidak sesuai format!",
             "pass.min" => "Password minimal 8 karakter!",
@@ -142,6 +264,7 @@ class ControllerForm extends Controller
         // Cookie::queue(Cookie::forget('loggedin'));
         return redirect('/');
     }
+<<<<<<< Updated upstream
 
     public function jualProperty(Request $req)
     {
@@ -227,4 +350,6 @@ class ControllerForm extends Controller
     public function kontrakProperty(Request $req){
 
     }
+=======
+>>>>>>> Stashed changes
 }

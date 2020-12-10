@@ -7,6 +7,7 @@
     <title>Document</title>
     <style>
         #navButtons{
+<<<<<<< Updated upstream
             /* float: right; */
             /* margin-right: 5px;
             margin-top: 2px; */
@@ -16,6 +17,26 @@
             border-radius: 5px;
             font-size: 15pt;
             margin-top: 70px;
+=======
+            background-color: lightsalmon;
+            border: solid darkgray 1px;
+            width: 25%;
+            height: 100%;
+            border-radius: 5px;
+            font-size: 15pt;
+        }
+        #navButtons:hover{
+            background-color: salmon;
+            cursor: pointer;
+        }
+        .headerContent{
+            height: 70%;
+            width: 100%;
+        }
+        .nav{
+            height: 30%;
+            width: 100%;
+>>>>>>> Stashed changes
         }
         .logo2{
             width: 20%;
@@ -24,12 +45,23 @@
             /* background-color: red; */
         }
         .regLogBtn{
+<<<<<<< Updated upstream
             width: 49%;
             height: 30px;
             margin-top: 30px;
             background-color: lightsalmon;
             border: solid black 1px;
             border-radius: 10px;
+=======
+            width: 10%;
+            height: 30px;
+            margin-top: 30px;
+            margin-right: 20px;
+            background-color: lightsalmon;
+            border: solid black 1px;
+            border-radius: 10px;
+            float: right;
+>>>>>>> Stashed changes
         }
         .header{
             width: 99vw;
@@ -99,6 +131,7 @@
 </head>
 <body>
     <div class="header">
+<<<<<<< Updated upstream
         <div class="logo">
             <div class="logo2">
                 <button class="regLogBtn" onclick="moveTo('login')">login</button>
@@ -109,6 +142,22 @@
             <button name="" id="navButtons" onclick="moveTo('beli')">beli Rumah</button>
             <button name="" id="navButtons" onclick="moveTo('kontrak')">kontrak Rumah</button>
             <button name="" id="navButtons" onclick="moveTo('jual')">Jual Rumah</button>
+=======
+        <div class="headerContent">
+            @if (session('loggedin')!=null)
+                <button class="regLogBtn" onclick="moveTo('profile')">profile</button>
+            @else
+                <button class="regLogBtn" onclick="moveTo('login')">login</button>
+                <button class="regLogBtn" onclick="moveTo('register')">register</button>
+            @endif
+        </div>
+        <div class="nav">
+            <button name="" id="navButtons" onclick="moveTo('beli')">Beli Rumah</button>
+            <button name="" id="navButtons" onclick="moveTo('kontrak')">Kontrak Rumah</button>
+            @if (session('loggedin')!=null)
+                <button name="" id="navButtons" onclick="moveTo('jual')">Jual Rumah</button>
+            @endif
+>>>>>>> Stashed changes
         </div>
     </div>
 

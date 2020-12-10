@@ -7,30 +7,17 @@
     <title>Document</title>
     <style>
         #navButtons{
-<<<<<<< Updated upstream
-            /* margin-right: 5px;
-            margin-top: 2px; */
-            background-color: lightsalmon;
-            border: solid darkgray 1px;
-            width: 25%;
-            border-radius: 5px;
-            font-size: 15pt;
-            margin-top: 70px;
-=======
             background-color: lightsalmon;
             border: solid darkgray 1px;
             width: 25%;
             height: 100%;
             border-radius: 5px;
             font-size: 15pt;
->>>>>>> Stashed changes
         }
         #navButtons:hover{
             background-color: salmon;
             cursor: pointer;
         }
-<<<<<<< Updated upstream
-=======
         .headerContent{
             height: 70%;
             width: 100%;
@@ -39,7 +26,6 @@
             height: 30%;
             width: 100%;
         }
->>>>>>> Stashed changes
         .logo2{
             width: 20%;
             float: right;
@@ -47,16 +33,10 @@
             /* background-color: red; */
         }
         .regLogBtn{
-<<<<<<< Updated upstream
-            width: 49%;
-            height: 30px;
-            margin-top: 30px;
-=======
             width: 10%;
             height: 30px;
             margin-top: 30px;
             margin-right: 20px;
->>>>>>> Stashed changes
             background-color: lightsalmon;
             border: solid black 1px;
             border-radius: 10px;
@@ -71,35 +51,15 @@
             width: 99vw;
             height: 82vh;
         }
-<<<<<<< Updated upstream
-        /* .footer{
-            width: 99vw;
-            height: 10vh;
-            background-color: lightgreen;
-        } */
-        /* .copyright{
-            font-size: 24pt;
-            float: left;
-        }
-        .noTelp{
-            float: right;
-            text-align: right;
-            font-size: 18pt;
-        } */
-=======
->>>>>>> Stashed changes
         .picture{
             width: 40%;
             height: 57vh;
             float: left;
         }
-<<<<<<< Updated upstream
-=======
         .contentHeader{
             /* margin-left: 15%; */
             text-align: center;
         }
->>>>>>> Stashed changes
         .contentText{
             width: 100%;
             height: 100%;
@@ -114,22 +74,6 @@
             background-size: cover;
             background-position: center;
         }
-<<<<<<< Updated upstream
-        .contentHeader{
-            margin-top: 20px;
-            font-size: 24pt;
-            text-align: center;
-        }
-        .contentTextInner{
-            margin-left: 10px;
-            margin-right: 10px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            font-size: 12pt;
-            text-align: center;
-        }
-=======
->>>>>>> Stashed changes
         .item{
             width: 23vw;
             height: 40vh;
@@ -138,22 +82,12 @@
             border-radius: 10px;
             margin-left: 1%;
             margin-top: 1%;
-<<<<<<< Updated upstream
-=======
             text-align: center;
->>>>>>> Stashed changes
         }
         .item:hover{
             cursor: pointer;
             background-color: wheat;
         }
-<<<<<<< Updated upstream
-        .gambarItem{
-            width: 80%;
-            height: 40%;
-            margin-top: 5%;
-            /* background-color: yellow; */
-=======
         .itemHeader{
             width: 100%;
             height: 10%;
@@ -171,22 +105,14 @@
             width: 80%;
             height: 60%;
             margin-top: 5%;
->>>>>>> Stashed changes
         }
         .view{
             margin-left: 1%;
             float: left;
         }
         .search{
-<<<<<<< Updated upstream
-            /* float: left; */
             width: 70%;
             height: 10%;
-            /* background-color: red; */
-=======
-            width: 70%;
-            height: 10%;
->>>>>>> Stashed changes
             margin-left: 15%;
             margin-top: 1%;
         }
@@ -208,13 +134,6 @@
 </head>
 <body>
     <div class="header">
-<<<<<<< Updated upstream
-        <div class="logo">
-            <div class="logo2">
-                <button class="regLogBtn" onclick="moveTo('login')">login</button>
-                <button class="regLogBtn" onclick="moveTo('register')">register</button>
-            </div>
-=======
         <div class="headerContent">
             @if (session('loggedin')!=null)
                 <button class="regLogBtn" onclick="moveTo('profile')">profile</button>
@@ -222,38 +141,26 @@
                 <button class="regLogBtn" onclick="moveTo('login')">login</button>
                 <button class="regLogBtn" onclick="moveTo('register')">register</button>
             @endif
->>>>>>> Stashed changes
         </div>
         <div class="nav">
             <button name="" id="navButtons" onclick="moveTo('beli')">Beli Rumah</button>
             <button name="" id="navButtons" onclick="moveTo('kontrak')">Kontrak Rumah</button>
-<<<<<<< Updated upstream
-            <button name="" id="navButtons" onclick="moveTo('jual')">Jual Rumah</button>
-=======
             @if (session('loggedin')!=null)
                 <button name="" id="navButtons" onclick="moveTo('jual')">Jual Rumah</button>
             @endif
->>>>>>> Stashed changes
         </div>
     </div>
 
     <div class="content">
         <div class="contentText">
             <div class="search">
-<<<<<<< Updated upstream
-                <form action="" method="GET" >
-                    <input type="text" name="" id="" class="searchBar">
-=======
                 <form action="/search" method="post" >
                     @csrf
                     <input type="text" name="search" id="" class="searchBar">
->>>>>>> Stashed changes
                     <input type="submit" value="" class="searchBtn">
                 </form>
             </div>
             <div class="contentTextInner">
-<<<<<<< Updated upstream
-=======
                 <div class="contentHeader">
                     @if ($data_properti!=null)
                         @if ($data_properti[0]->kategori_properti=='beli')
@@ -264,29 +171,13 @@
                     @endif
 
                 </div>
->>>>>>> Stashed changes
                 @isset($data_properti)
                     @foreach ($data_properti as $properti)
-                    <div class="item" onclick="moveTo('properti_{{$properti->id_properti}}')">
+                    <div class="item" onclick="moveTo('requested_{{$properti->id_properti}}')">
                         <div class="itemHeader" style="font-size: 18pt">
                             {{$properti->alamat_properti}}
                         </div>
                         <hr>
-<<<<<<< Updated upstream
-                        <div class="view">
-                            view: {{ $properti->view_properti }}
-                        </div>
-                        <img src="{{$properti->foto_properti}}" alt="" class="gambarItem">
-                        <div class="item_desc" style="font-size: 14pt">
-                            @if (strlen($properti->deskripsi_properti)>20)
-                                {{ substr($properti->deskripsi_properti, 0, 20) }}...
-                            @else
-                                {{$properti->deskripsi_properti}}
-                            @endif
-                        </div>
-                        <div class="harga" style="font-size: 12pt;">
-                            Rp. {{ $properti->harga_properti }}
-=======
                         <div class="itemContent">
                             <img src="{{$properti->foto_properti}}" alt="" class="gambarItem">
                             <div class="item_desc" style="font-size: 14pt">
@@ -304,7 +195,6 @@
                             <div class="view">
                                 view: {{ $properti->view_properti }}
                             </div>
->>>>>>> Stashed changes
                         </div>
                     </div>
                     @endforeach
@@ -313,17 +203,5 @@
             <div class="backgroundImg"></div>
         </div>
     </div>
-<<<<<<< Updated upstream
-
-    {{-- <div class="footer">
-        <div class="copyright">
-
-        </div>
-        <div class="noTelp">
-
-        </div>
-    </div> --}}
-=======
->>>>>>> Stashed changes
 </body>
 </html>
