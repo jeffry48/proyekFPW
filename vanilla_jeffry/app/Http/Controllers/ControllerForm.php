@@ -11,20 +11,134 @@ use App\Rules\LoginUsername;
 use App\Rules\UpdateProfCurPass;
 use App\Rules\UpdateProfEmail;
 use App\Rules\UpdateProfUsername;
+use App\UserBeliModel;
+use App\users_sell_property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
-
 class ControllerForm extends Controller
 {
-    // ini untuk guest
+    //octa
+    public function jualProperty(Request $req)
+    {
+        $data_properti = property::all();
+        $countDataPropertiJual = users_sell_property::count();
+        $countDataPropertiJual++;
+
+        if($countDataPropertiJual < 10){
+            $idJual = "J000" . $countDataPropertiJual;
+        }
+        else if($countDataPropertiJual >= 10 && $countDataPropertiJual < 100){
+            $idJual = "J00" . $countDataPropertiJual;
+        }
+        else{
+            $idJual = "J0" . $countDataPropertiJual;
+        }
+
+        $ada = false;
+        foreach ($data_properti as $properti){
+            if($properti->alamat_properti == $req->alamat){
+                // sudah pernah ada di database properti
+                $ada = true;
+                $insertData = [
+                    "id_jual" => $idJual,
+                    "id_user" => session('loggedin'),
+                    "id_properti" => $properti->id_properti,
+                    "preparasi_properti_jual" => $req->preparasi
+                ];
+                users_sell_property::create($insertData);
+
+                $idCek=$properti->id_properti;
+            }
+        }
+
+        if($ada){
+            $updateProp=property::all()
+            ->where('id_properti', $idCek)->all();
+            sort($updateProp);
+
+            
+            $file = $req->file('foto');
+            $file->move('properti',$file->getClientOriginalName());
+            $namaPic = 'properti/'.$idCek.'.'.$file->getClientOriginalExtension();
+            unlink($updateProp[0]->foto_properti);
+            rename(public_path('properti/'.$file->getClientOriginalName()), public_path($namaPic));
+
+            $updateProp[0]->jenis_properti=$req->jenis;
+            $updateProp[0]->kategori_properti=$req->kategori;
+            $updateProp[0]->deskripsi_properti=$req->deskripsi;
+            $updateProp[0]->jumlah_ruangan_properti=$req->jumRuangan;
+            $updateProp[0]->jumlah_kamar_mandi_properti=$req->jumKamarMandi;
+            $updateProp[0]->harga_properti=$req->harga;
+            $updateProp[0]->tgl_terdaftar_properti=now();
+            $updateProp[0]->foto_properti=$namaPic;
+            $updateProp[0]->view_properti=0;
+            $updateProp[0]->status=1;
+
+            $updateProp[0]->save();
+
+        }
+
+        if(!$ada){
+            $countDataProperti = property::count();
+            $countDataProperti++;
+
+            if($countDataProperti < 10){
+                $idProperti = "P000" . $countDataProperti;
+            }
+            else if($countDataProperti >= 10 && $countDataProperti < 100){
+                $idProperti = "P00" . $countDataProperti;
+            }
+            else{
+                $idProperti = "P0" . $countDataProperti;
+            }
+            $file = $req->file('foto');
+            $file->move('properti',$file->getClientOriginalName());
+            $namaPic = 'properti/'.$idProperti.'.'.$file->getClientOriginalExtension();
+            rename(public_path('properti/'.$file->getClientOriginalName()), public_path($namaPic));
+
+            $insertData = [
+                "id_properti" => $idProperti,
+                "jenis_properti" => $req->jenis,
+                "kategori_properti" => $req->kategori,
+                "deskripsi_properti" => $req->deskripsi,
+                "jumlah_ruangan_properti" => $req->jumRuangan,
+                "jumlah_kamar_mandi_properti" => $req->jumKamarMandi,
+                "alamat_properti" => $req->alamat,
+                "harga_properti" => $req->harga,
+                "tgl_terdaftar_properti" => now(),
+                "foto_properti" => $namaPic,
+                "view_properti" => 0,
+                "status" => 1
+            ];
+
+            property::create($insertData);
+
+            $insertData = [
+                "id_jual" => $idJual,
+                "id_user" => session('loggedin'),
+                "id_properti" => $idProperti,
+                "preparasi_properti_jual" => $req->preparasi
+            ];
+            users_sell_property::create($insertData);
+        }
+
+        return view("jualRumah");
+    }
+
+    // Adrian //////////////////////////////////////////////////////////////////
     public function indexBeli(){
         $data_properti = property::where("kategori_properti","Beli")->get();
+        session(['activity' => 'Beli']);
         return view("beliRumah", ["data_properti" => $data_properti]);
     }
     public function indexKontrak(){
         $data_properti = property::where("kategori_properti","Kontrak")->get();
+        session(['activity' => 'Kontrak']);
         return view("beliRumah", ["data_properti" => $data_properti]);
     }
+    /////////////////////////////////////////////////////////////////////////////
+
+    //buatan alex:
     public function indexJual()
     {
         return view('jualRumah');
@@ -33,7 +147,7 @@ class ControllerForm extends Controller
     {
         return view('register');
     }
-    
+
     function regCheck(Request $request)
     {
         $validatedData = $request->validate([
@@ -52,15 +166,15 @@ class ControllerForm extends Controller
             "pass.regex" => "Password harus terdiri atas huruf besar dan kecil!",
             "repass.same" => "Konfirmasi password salah!"
         ]);
-        
+
         // SELECT `id_user`, `nama_user`, `no_telp_user`, `email_user`, `username_user`, `password_user` FROM `user` WHERE 1
         $count = count(users::where("id_user","like","U%")->get());
         $count += 1;
         $temp = "";
-        for ($i=0; $i < 4-(int)pow($count,1/10); $i++) { 
+        for ($i=0; $i < 4-(int)pow($count,1/10); $i++) {
             $temp .= "0";
         }
-        
+
         $data = new users;
         $data->id_user = "U".$temp.$count;
         $data->nama_user = $request->input('name');
@@ -76,7 +190,7 @@ class ControllerForm extends Controller
     {
         return view('login');
     }
-    
+
     function cekLogin(Request $request){
         $username = $request->input('username');
         $validatedData = $request->validate([
@@ -96,7 +210,7 @@ class ControllerForm extends Controller
         $data_properti = property::where('id_properti', $idProperti)->first();
         return view("detailProperti", ["data_properti" => $data_properti]);
     }
-    
+
     public function profile()
     {
         $loggedin = session('loggedin');
@@ -104,7 +218,7 @@ class ControllerForm extends Controller
         $user = users::where('id_user',$loggedin)->first();
         return view('profile',["user"=>$user]);
     }
-    
+
     function updateprofile(Request $request){
         $validatedData = $request->validate([
             "name" => ["required", "max:24"],
@@ -114,7 +228,7 @@ class ControllerForm extends Controller
             "pass" => ["required", "min:8", "max:12", "regex:/[a-z]/", "regex:/[A-Z]/"],
             "repass" => ["required", new UpdateProfCurPass()]
         ], [
-            "required" => "Field tidak boleh dikosongi!",
+            "required" => "Field :attribute tidak boleh dikosongi!",
             "name.max" => "Panjang nama tidak boleh lebih dari 24!",
             "email.regex" => "Email tidak sesuai format!",
             "pass.min" => "Password minimal 8 karakter!",
@@ -123,7 +237,7 @@ class ControllerForm extends Controller
         ]);
 
         // $users = users::where([["username_user",$username]])->get();
-        
+
         $loggedin = session('loggedin');
         users::where('id_user',$loggedin)->update([
             'nama_user' => $request->input('name'),
