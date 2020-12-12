@@ -144,7 +144,7 @@
 
             <div class="gambarImg"></div>
                 <h1>Profile</h1>
-                <button onclick="moveTo('myProperti')">lihat properti jual</button>
+                <button onclick="moveTo('myPropertiBeli')">lihat properti jual</button>
                 <button onclick="moveTo('logout')">logout</button>
                 <hr>
                 <form action="/updateprofile" method="POST">

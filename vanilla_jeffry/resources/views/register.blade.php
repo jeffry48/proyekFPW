@@ -76,7 +76,7 @@
         }
         .gambarImg{
             width: 40%;
-            height: 100%;
+            height: 120%;
             background-color: brown;
             float: left;
         }
@@ -139,36 +139,68 @@
                     nama lengkap:
                 </div>
                 <input type="text" name="name" id="" class="input"> <br>
+                @error('name')
+                    <div class="text" style="color: red">
+
+                    </div>
+                    <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                @enderror
 
                 <div class="text">
                     no telp:
                 </div>
                 <input type="text" name="phone" id="" class="input"> <br>
+                @error('phone')
+                    <div class="text" style="color: red">
+
+                    </div>
+                    <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                @enderror
 
                 <div class="text">
                     email:
                 </div>
                 <input type="text" name="email" id="" class="input"> <br>
+                @error('email')
+                <div class="text" style="color: red">
+
+                    </div>
+                    <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                @enderror
 
                 <div class="text">
                     username
                 </div>
                 <input type="text" name="username" id="" class="input"> <br>
+                @error('username')
+                <div class="text" style="color: red">
+
+                    </div>
+                    <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                @enderror
 
                 <div class="text">
                     password
                 </div>
                 <input type="password" name="pass" id="" class="input"> <br>
+                @error('pass')
+                <div class="text" style="color: red">
+
+                    </div>
+                    <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                @enderror
 
                 <div class="text">
                     confirm password
                 </div>
                 <input type="password" name="repass" id="" class="input"> <br>
-                <input type="submit" value="register" class="registerBtn">
+                @error('repass')
+                <div class="text" style="color: red">
 
-                @if ($errors->any())
-                    {{dd($errors)}};
-                @endif
+                </div>
+                <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                @enderror
+                <input type="submit" value="register" class="registerBtn">
 
             </form>
 

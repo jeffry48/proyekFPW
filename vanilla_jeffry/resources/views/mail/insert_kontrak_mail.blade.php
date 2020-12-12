@@ -7,12 +7,15 @@
     <title>Document</title>
 </head>
 <body>
-    Kepada : {{$seller->nama_user}}, properti anda telah dibeli dengan detail sebagai berikut : <br>
-    Nama pembeli : {{$buyer->nama_user}} <br>
+    Kepada : {{$seller->nama_user}}, properti anda telah dikontrak dengan detail sebagai berikut : <br>
+    Nama kontraktor : {{$buyer->nama_user}} <br>
     Alamat properti : {{$properti->alamat_properti}} <br>
     Kategori properti : {{$properti->kategori_properti}} <br>
     Harga properti : {{$properti->harga_properti}} <br>
-    Tgl beli : {{$tgl}} <br>
-    {{-- propert milik {{$user->id_user}} dibeli seseorang --}}
+    Tgl kontrak : {{$tgl}} <br>
+    Tgl mulai kontrak : {{$tglAwal}} <br>
+    Durasi : {{$durasi}} <br>
+    Tgl akhir kontrak : {{$tglAkhir}} <br>
+    {{-- propert milik {{$user->id_user}} dikontrak seseorang --}}
 </body>
 </html>

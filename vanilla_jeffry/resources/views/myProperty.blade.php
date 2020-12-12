@@ -125,6 +125,18 @@
             width: 5%;
             height: 30px;
         }
+        .filterBar{
+            font-size: 16pt;
+        }
+        .filterCont{
+            margin-left: 3%;
+            font-size: 16pt;
+            margin-bottom: 1%;
+        }
+        .filterBtn{
+            font-size: 14pt;
+            margin-left: 1%;
+        }
     </style>
     <script>
         function moveTo(link){
@@ -157,6 +169,17 @@
                 <div class="contentHeader">
                     <h1>my property</h1>
                 </div>
+                <div class="filterCont">
+                    <form action="filterMyProp" method="POST">
+                        @csrf
+                        filter here
+                        <select name="filter" id="" class="filterBar">
+                            <option value="jual">jual</option>
+                            <option value="kontrak">kontrak</option>
+                        </select>
+                        <input type="submit" value="filter" class="filterBtn">
+                    </form>
+                </div>
 
                 @php
                     use App\property;
@@ -164,40 +187,39 @@
 
                 @isset($data_properti)
                     @foreach ($data_properti as $properti)
+                        @php
+                            $data=property::all()
+                            ->where('id_properti', $properti->id_properti)
+                            ->where('status', 1)->all();
+                            sort($data);
+                        @endphp
 
-                    @php
-                        $data=property::all()
-                        ->where('id_properti', $properti->id_properti)
-                        ->where('status', 1)->all();
-                        sort($data);
-                    @endphp
-
-                    @for ($i = 0; $i < count($data); $i++)
-                        <div class="item" onclick="moveTo('myProperti_{{$data[$i]->id_properti}}')">
-                            <div class="itemHeader" style="font-size: 18pt">
-                                {{$data[$i]->alamat_properti}}
-                            </div>
-                            <hr>
-                            <div class="itemContent">
-                                <img src="{{$data[$i]->foto_properti}}" alt="" class="gambarItem">
-                                <div class="item_desc" style="font-size: 14pt">
-                                    @if (strlen($data[$i]->deskripsi_properti)>20)
-                                        {{ substr($data[$i]->deskripsi_properti, 0, 20) }}...
-                                    @else
-                                        {{$data[$i]->deskripsi_properti}}
-                                    @endif
+                        @for ($i = 0; $i < count($data); $i++)
+                            <div class="item" onclick="moveTo('myProperti_{{$data[$i]->id_properti}}')">
+                                <div class="itemHeader" style="font-size: 18pt">
+                                    {{$data[$i]->alamat_properti}}
                                 </div>
-                                <div class="harga" style="font-size: 12pt;">
-                                    Rp. {{ $data[$i]->harga_properti }}
+                                <hr>
+                                <div class="itemContent">
+                                    <img src="{{$data[$i]->foto_properti}}" alt="" class="gambarItem">
+                                    <div class="item_desc" style="font-size: 14pt">
+                                        @if (strlen($data[$i]->deskripsi_properti)>20)
+                                            {{ substr($data[$i]->deskripsi_properti, 0, 20) }}...
+                                        @else
+                                            {{$data[$i]->deskripsi_properti}}
+                                        @endif
+                                    </div>
+                                    <div class="harga" style="font-size: 12pt;">
+                                        Rp. {{ $data[$i]->harga_properti }}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="itemFooter">
-                                <div class="view">
-                                    view: {{ $data[$i]->view_properti }}
+                                <div class="itemFooter">
+                                    <div class="view">
+                                        view: {{ $data[$i]->view_properti }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endfor
+                        @endfor
                     @endforeach
                 @endisset
             </div>

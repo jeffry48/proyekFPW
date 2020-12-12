@@ -118,6 +118,12 @@
     </script>
 </head>
 <body>
+    @php
+        if(session('pesan')!=null){
+            echo "<script>alert('tanah harus memiliki ruangan dan kamar mandi 0')</script>";
+            session()->forget('pesan');
+        }
+    @endphp
     <div class="header">
         <div class="header">
             <div class="headerContent">
@@ -141,10 +147,9 @@
     <div class="content">
         <div class="contentText">
             <div class="gambarImg"></div>
-
-                <h1>Daftarkan Rumah Untuk Dijual</h1>
+                <h1>Daftarkan properti Untuk Dijual</h1>
                 <hr>
-                <form action="jualProperti" method="POST">
+                <form action="jualProperti" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="text">
                         jenis properti:
@@ -189,24 +194,50 @@
                         jumlah ruangan
                     </div>
                     <input type="text" name="jumRuangan" id="" class="input"><br>
+
+                    @error('jumRuangan')
+                        <div class="text" style="color: red"></div>
+                        <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                    @enderror
+
                     <div class="text">
                         jumlah kamar mandi
                     </div>
                     <input type="text" name="jumKamarMandi" id="" class="input"><br>
+
+                    @error('jumKamarMandi')
+                        <div class="text" style="color: red"></div>
+                        <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                    @enderror
+
                     <div class="text">
                         alamat
                     </div>
                     <input type="text" name="alamat" id="" class="input"><br>
+
+                    @error('alamat')
+                        <div class="text" style="color: red"></div>
+                        <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                    @enderror
+
                     <div class="text">
                         harga
                     </div>
                     <input type="text" name="harga" id="" class="input"><br>
+
+                    @error('harga')
+                        <div class="text" style="color: red"></div>
+                        <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                    @enderror
+
                     <div class="text">
                         foto
                     </div>
+                    {{--Alex just now--}}
                     <div class="input">
-                        <input type="file" name="foto" id=""> <br>
+                        <input type="file" name="foto" id="" accept = 'image/jpeg , image/jpg, image/png'> <br>
                     </div>
+                    {{--Alex just now--}}
 
                     <div class="text">
                         <input type="submit" value="submit" class="registerBtn">

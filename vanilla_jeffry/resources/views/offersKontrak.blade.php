@@ -151,9 +151,8 @@
 
     @php
         use App\users;
-        use App\UserBeliModel;
+        use App\UserKontrakRumah;
         use App\property;
-        use App\cicilanModel;
     @endphp
 
     <div class="content">
@@ -163,15 +162,15 @@
                     {{-- Welcome, {{ $user_login->nama_user }} --}}
                 @endisset
             </div>
-            @isset($idBeli)
+            @isset($idKontrak)
                 @php
-                    $dataBeli=UserBeliModel::find($idBeli);
-                    $dataUser=users::find($dataBeli->id_user);
-                    $dataProperti=property::find($dataBeli->id_properti);
+                    $dataKontrak=UserKontrakRumah::find($idKontrak);
+                    $dataUser=users::find($dataKontrak->id_user);
+                    $dataProperti=property::find($dataKontrak->id_properti);
 
                     // dd($dataUser);
                 @endphp
-                <img src="" alt="" class="gambarItem">
+                <img src="{{URL::asset($dataProperti->foto_properti)}}" alt="" class="gambarItem">
                 <div class="contentTextInner">
                     <div class="textItem" style="font-size: 18pt;">
                         Detail properti:
@@ -206,16 +205,10 @@
                     <div class="textItem">
                         email: {{ $dataUser->email_user }}
                     </div>
-                    <div class="textItem">
-                        pesan: {{ $dataBeli->pesan_untuk_penjual }}
-                    </div>
-                    <div class="textItem">
-                        metode pembayaran: {{ $dataBeli->metode_pembelian }}
-                    </div>
-                    @if ($dataBeli->metode_pembelian=='kredit')
+                    @if ($dataKontrak->metode_pembelian=='kredit')
                         @php
                             $dataCicilan=cicilanModel::all()
-                            ->where('id_beli', $dataBeli->id_beli)->all();
+                            ->where('id_beli', $dataKontrak->id_beli)->all();
                             sort($dataCicilan);
                         @endphp
 
@@ -223,23 +216,23 @@
                             durasi kredit: {{$dataCicilan[0]->durasi_cicilan}}
                         </div>
                         <div class="textItem">
-                            pembayaran setiap bulan: {{($dataBeli->total_beli)/($dataCicilan[0]->durasi_cicilan)}}
+                            pembayaran setiap bulan: {{($dataKontrak->total_beli)/($dataCicilan[0]->durasi_cicilan)}}
                         </div>
 
                         <hr>
                     @endif
                     <div class="textItem">
-                        pajak: {{ $dataBeli->pajak_beli }}
+                        pajak: {{ $dataKontrak->harga/10 }}
                     </div>
                     <div class="textItem">
-                        total: {{ $dataBeli->total_beli }}
+                        total: {{ $dataKontrak->harga }}
                     </div>
-                    <form action="prosesBeli" method="POST">
+                    <form action="prosesKontrak" method="POST">
                         @csrf
 
-                        <input type="hidden" name="idBeli" value="{{$dataBeli->id_beli}}">
+                        <input type="hidden" name="idKontrak" value="{{$dataKontrak->id_kontrak}}">
                         <input type="hidden" name="idProperti" value="{{$dataProperti->id_properti}}">
-                        <input type="submit" value="terima pembelian" class="beliBtn">
+                        <input type="submit" value="terima pengontrakan" class="beliBtn">
                     </form>
                 </div>
             @endisset

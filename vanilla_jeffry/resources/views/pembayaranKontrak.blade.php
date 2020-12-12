@@ -151,15 +151,6 @@
                 <h1>pembayaran</h1>
                 <hr>
                 <div class="text">
-                    Pembayaran
-                </div>
-                <div class="input">
-                    <select name="jenisPembayaran" id="" style="font-size: 16pt">
-                        <option value="cash">cash</option>
-                        <option value="kredit">kredit</option>
-                    </select>
-                </div>
-                <div class="text">
                     Pajak
                 </div>
                 <div class="input">

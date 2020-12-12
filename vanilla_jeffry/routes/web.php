@@ -49,13 +49,21 @@ Route::group(['middleware' => 'isLogin' ], function (){
 
     Route::any('/jualProperti', 'ControllerForm@jualProperty');
 
-    Route::get('/myProperti', "controllerJeffry@showMyProperty");
+    Route::get('/myPropertiBeli', "controllerJeffry@showMyPropertyBeli");
+    Route::get('/myPropertiKontrak', "controllerJeffry@showMyPropertyKontrak");
+
     Route::get('/myProperti_{id}', "controllerJeffry@showmyPropertiDetail");
-    Route::get('/offerDetail_{id}', function ($id)
+    Route::get('/offerDetailBeli_{id}', function ($id)
     {
-        return view('offers', ["idBeli"=>$id]);
+        return view('offersBeli', ["idBeli"=>$id]);
+    });
+    Route::get('/offerDetailKontrak_{id}', function ($id)
+    {
+        return view('offersKontrak', ["idKontrak"=>$id]);
     });
 
+    Route::post('/filterMyProp', "controllerJeffry@filterMyProp");
     Route::post('/prosesBeli', "controllerJeffry@prosesBeli");
+    Route::post('/prosesKontrak', "controllerJeffry@prosesKontrak");
 
 });

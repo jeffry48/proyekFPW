@@ -80,7 +80,7 @@
         }
         .textItem{
             float: left;
-            width: 50%;
+            width: 50vw;
             font-size: 12pt;
             margin-left: 1%;
             margin-top: 0.5%;
@@ -105,6 +105,32 @@
         }
         .userHeader{
             font-size: 14pt;
+        }
+        .slider{
+            overflow: auto;
+            width: 100%;
+        }
+        .cardbox{
+            float: left;
+            width: 97%;
+            padding : 1%;
+            background-color: coral;
+        }
+        .cardbox:hover{
+            background-color: wheat;
+            cursor: default;
+        }
+        .headerRec{
+            font-size: 16pt;
+        }
+        .contentRec{
+            margin-left: 2%;
+            float: left;
+        }
+        .picRec{
+            float: left;
+            height: 100px;
+            width: 100px;
         }
     </style>
     <script>
@@ -141,6 +167,7 @@
     @php
         use App\users;
         use App\UserBeliModel;
+        use App\UserKontrakRumah;
     @endphp
 
     <div class="content">
@@ -152,9 +179,12 @@
             </div>
             <div class="contentTextInner">
                 @isset($data_properti)
-                    <img src="" alt="" class="gambarItem">
+                    <img src="{{URL::asset($data_properti->foto_properti)}}" alt="" class="gambarItem">
                     <div class="textItem" style="font-size: 18pt;">
                         {{ $data_properti->alamat_properti }}
+                    </div>
+                    <div class="textItem" style="font-size: 14pt;">
+                        <u>jenis properti: {{ $data_properti->jenis_properti }}</u>
                     </div>
                     <div class="textItem">
                         {{ $data_properti->harga_properti }}
@@ -191,7 +221,17 @@
                                 @else
                                     <button class="pembayaranBtn" onclick="moveTo('showPembayaranKontrak_{{$data_properti->id_properti}}')">pembayaran kontrak</button>
                                 @endif
+                                @php
+                                    $jenis = $data_properti->jenis_properti;
+                                    // echo "<script>alert(".$jenis.")</script>";
+                                    $list = DB::table('properti')->where('jenis_properti', $jenis)->get();
+                                    if(count($list)>0){
+                                        $rekomendasi = $list;
+                                    }
+                                    $ctr_rekom = 0;
+                                @endphp
                                 @isset($rekomendasi)
+                                    <br>
                                     <div class="textItem">
                                         <h3>Rekomendasi</h3>
                                         <div class="slider">
@@ -200,7 +240,7 @@
                                                     @if ($item->id_properti!=$data_properti->id_properti)
                                                     <div></div>
                                                     <div class="cardbox" onclick="moveTo('properti_{{$item->id_properti}}')">
-                                                        <img src="" alt="" class="picRec">
+                                                        <img src="{{URL::asset($item->foto_properti)}}" alt="" class="picRec">
                                                         <div class="contentRec">
                                                             <div class="headerRec">
                                                                 <div>{{$item->alamat_properti}}</div>
@@ -214,23 +254,28 @@
                                                         $ctr_rekom++;
                                                     @endphp
                                                     @endif
-
                                                 @endif
                                             @endforeach
                                         </div>
                                     </div>
                                 @endisset
                             @else
-
-                                pembelian:
+                                offer:
                                 <br>
                                 <br>
                                 @php
                                     session()->forget('seller');
 
-                                    $listRequest=UserBeliModel::all()
-                                    ->where('id_properti', $data_properti->id_properti)->all();
-                                    sort($listRequest);
+                                    if($data_properti->kategori_properti=='beli'){
+                                        $listRequest=UserBeliModel::all()
+                                        ->where('id_properti', $data_properti->id_properti)->all();
+                                        sort($listRequest);
+                                    }
+                                    else if($data_properti->kategori_properti=='kontrak'){
+                                        $listRequest=UserKontrakRumah::all()
+                                        ->where('id_properti', $data_properti->id_properti)->all();
+                                        sort($listRequest);
+                                    }
 
                                     $listData=[];
 
@@ -244,22 +289,45 @@
                                     // dd($listData);
                                 @endphp
                                 @for ($i = 0; $i < count($listData); $i++)
-                                    <div class="usersCont" onclick="moveTo('offerDetail_{{$listRequest[$i]->id_beli}}')">
+                                @if ($data_properti->kategori_properti=='beli')
+                                    <div class="usersCont" onclick="moveTo('offerDetailBeli_{{$listRequest[$i]->id_beli}}')">
+                                @elseif($data_properti->kategori_properti=='kontrak')
+                                    <div class="usersCont" onclick="moveTo('offerDetailKontrak_{{$listRequest[$i]->id_kontrak}}')">
+                                @endif
                                         <div class="userHeader">
                                             {{$listData[$i]->nama_user}}
                                             <br>
                                         </div>
-                                        @php
-                                            $listBeli=UserBeliModel::all()
-                                            ->where('id_properti', $data_properti->id_properti)
-                                            ->where('id_user', $listData[$i]->id_user)->all();
+                                        @if ($data_properti->kategori_properti=='beli')
+                                            @php
+                                                $listBeli=UserBeliModel::all()
+                                                ->where('id_properti', $data_properti->id_properti)
+                                                ->where('id_user', $listData[$i]->id_user)->all();
 
-                                            sort($listBeli);
-                                        @endphp
+                                                sort($listBeli);
+                                            @endphp
 
-                                        @for ($j = 0; $j < count($listBeli); $j++)
-                                            {{$listBeli[$j]->pesan_untuk_penjual}}
-                                        @endfor
+                                            @for ($j = 0; $j < count($listBeli); $j++)
+                                                {{$listBeli[$j]->pesan_untuk_penjual}}
+                                            @endfor
+                                        @elseif($data_properti->kategori_properti=='kontrak')
+                                            @php
+                                                $listBeli=UserKontrakRumah::all()
+                                                ->where('id_properti', $data_properti->id_properti)
+                                                ->where('id_user', $listData[$i]->id_user)->all();
+
+                                                sort($listBeli);
+                                            @endphp
+
+                                            @for ($j = 0; $j < count($listBeli); $j++)
+                                                tgl awal kontrak: {{$listBeli[$j]->tgl_awal}} <br>
+                                                tgl akhir kontrak: {{$listBeli[$j]->tgl_awal}} <br>
+                                                durasi kontrak: {{$listBeli[$j]->durasi_kontrak}}<br>
+                                                <br>
+                                                permintaan: {{$listBeli[$j]->tgl_kontrak}}
+                                            @endfor
+                                        @endif
+
                                     </div>
                                 @endfor
                             @endif

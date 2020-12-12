@@ -178,7 +178,10 @@
                         </div>
                         <hr>
                         <div class="itemContent">
-                            <img src="{{$properti->foto_properti}}" alt="" class="gambarItem">
+                            <img src="{{URL::asset($properti->foto_properti)}}" alt="" class="gambarItem">
+                            <div class="jenisProp" style="font-size: 12pt;">
+                                {{ $properti->jenis_properti }}
+                            </div>
                             <div class="item_desc" style="font-size: 14pt">
                                 @if (strlen($properti->deskripsi_properti)>20)
                                     {{ substr($properti->deskripsi_properti, 0, 20) }}...

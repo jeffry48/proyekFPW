@@ -21,6 +21,21 @@ class ControllerForm extends Controller
     //octa
     public function jualProperty(Request $req)
     {
+        $validateData=[
+            'jumRuangan'=>['required'],
+            'jumKamarMandi'=>['required'],
+            'alamat'=>['required'],
+            'harga'=>['required'],
+        ];
+        $customMessage=[
+            'required'=>':attribute harus terisi',
+        ];
+        if($req->jenis=='tanah'&&($req->jumRuangan!=0||$req->jumKamarmandi!=0)){
+            session(['pesan'=>'ada']);
+            return redirect('jual');
+        }
+        $this->validate($req, $validateData, $customMessage);
+
         $data_properti = property::all();
         $countDataPropertiJual = users_sell_property::count();
         $countDataPropertiJual++;
@@ -57,6 +72,14 @@ class ControllerForm extends Controller
             ->where('id_properti', $idCek)->all();
             sort($updateProp);
 
+            //Alex just now
+            $file = $req->file('foto'); // ngambil foto
+            $file->move('properti',$file->getClientOriginalName()); //move ke public/properti
+            $namaPic = 'properti/'.$idCek.'.'.$file->getClientOriginalExtension(); //hasil nama
+            unlink($updateProp[0]->foto_properti); //hapus file
+            rename(public_path('properti/'.$file->getClientOriginalName()), public_path($namaPic));
+            //Alex just now
+
             $updateProp[0]->jenis_properti=$req->jenis;
             $updateProp[0]->kategori_properti=$req->kategori;
             $updateProp[0]->deskripsi_properti=$req->deskripsi;
@@ -64,7 +87,7 @@ class ControllerForm extends Controller
             $updateProp[0]->jumlah_kamar_mandi_properti=$req->jumKamarMandi;
             $updateProp[0]->harga_properti=$req->harga;
             $updateProp[0]->tgl_terdaftar_properti=now();
-            $updateProp[0]->foto_properti=$req->foto;
+            $updateProp[0]->foto_properti=$namaPic; // ganti ini
             $updateProp[0]->view_properti=0;
             $updateProp[0]->status=1;
 
@@ -86,6 +109,13 @@ class ControllerForm extends Controller
                 $idProperti = "P0" . $countDataProperti;
             }
 
+            //Alex just now
+            $file = $req->file('foto');
+            $file->move('properti',$file->getClientOriginalName());
+            $namaPic = 'properti/'.$idProperti.'.'.$file->getClientOriginalExtension();
+            rename(public_path('properti/'.$file->getClientOriginalName()), public_path($namaPic));
+            //Alex just now
+
             $insertData = [
                 "id_properti" => $idProperti,
                 "jenis_properti" => $req->jenis,
@@ -96,7 +126,9 @@ class ControllerForm extends Controller
                 "alamat_properti" => $req->alamat,
                 "harga_properti" => $req->harga,
                 "tgl_terdaftar_properti" => now(),
-                "foto_properti" => $req->foto,
+                //Alex just now
+                "foto_properti" => $namaPic,
+                //Alex just now
                 "view_properti" => 0,
                 "status" => 1
             ];
@@ -118,12 +150,12 @@ class ControllerForm extends Controller
 
     // Adrian //////////////////////////////////////////////////////////////////
     public function indexBeli(){
-        $data_properti = property::where("kategori_properti","Beli")->get();
+        $data_properti = property::where("kategori_properti","Beli")->where('status', 1)->get();
         session(['activity' => 'Beli']);
         return view("beliRumah", ["data_properti" => $data_properti]);
     }
     public function indexKontrak(){
-        $data_properti = property::where("kategori_properti","Kontrak")->get();
+        $data_properti = property::where("kategori_properti","Kontrak")->where('status', 1)->get();
         session(['activity' => 'Kontrak']);
         return view("beliRumah", ["data_properti" => $data_properti]);
     }
@@ -182,7 +214,8 @@ class ControllerForm extends Controller
         return view('login');
     }
 
-    function cekLogin(Request $request){
+    function cekLogin(Request $request)
+    {
         $username = $request->input('username');
         $validatedData = $request->validate([
             'username' => ['bail','required', new LoginUsername()],
@@ -192,13 +225,14 @@ class ControllerForm extends Controller
         ]);
 
         $users = users::where([["username_user",$username]])->first();
-        // Cookie::queue("loggedin", json_encode($users->id_user), 360);
         session(['loggedin' => $users->id_user]);
         return redirect('/');
     }
     public function showProperti($idProperti)
     {
         $data_properti = property::where('id_properti', $idProperti)->first();
+        $data_properti->view_properti++;
+        $data_properti->save();
         return view("detailProperti", ["data_properti" => $data_properti]);
     }
 
@@ -210,7 +244,8 @@ class ControllerForm extends Controller
         return view('profile',["user"=>$user]);
     }
 
-    function updateprofile(Request $request){
+    function updateprofile(Request $request)
+    {
         $validatedData = $request->validate([
             "name" => ["required", "max:24"],
             "email" => ["required", "regex:/^.+@.+$/i", "regex:/^.*(?=.*[.]).*$/", new UpdateProfEmail()],
