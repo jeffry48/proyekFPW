@@ -10,6 +10,7 @@ class UserBeliModel extends Model
     protected $primaryKey = 'id_beli';
     protected $table= 'user_properti_beli';
     public $timestamps = false;
+    public $incrementing=false;
     protected $fillable = [
         'id_beli'
     ];

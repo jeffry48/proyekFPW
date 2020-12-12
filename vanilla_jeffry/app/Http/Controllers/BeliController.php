@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\BeliModel;
+use App\Mail\InsertMail;
 use App\property;
 use App\UserBeliModel;
 use App\UserKontrakRumah;
 use App\users;
+use App\users_sell_property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class BeliController extends Controller
 {
@@ -44,6 +47,7 @@ class BeliController extends Controller
             $data->id_beli = $id_beli;
             $data->id_user = $id_user;
             $data->id_properti = $id_properti;
+            $data->metode_pembelian = $request->jenisPembayaran;
             $data->pajak_beli = $harga*(10/100);
             $data->total_beli = $harga+($harga*(10/100));
             $data->pesan_untuk_penjual = $request->pesanPembeli;
@@ -55,6 +59,8 @@ class BeliController extends Controller
                 session(['pajak_beli'=>$harga*(10/100)]);
                 session(['harga'=>$harga]);
                 session(['total_beli'=>$harga+($harga*(10/100))]);
+                session(['jenisPembayaran'=>$request->jenisPembayaran]);
+                session(['pesanPembeli'=>$request->pesanPembeli]);
                 return redirect('showCicilan');
             }
             else if($request->jenisPembayaran=='cash'){
@@ -64,6 +70,14 @@ class BeliController extends Controller
                 // return redirect('properti_'.$id_properti);
                 $data_properti = property::all()->where('id_properti', $id_properti)->all();
                 sort($data_properti);
+
+                // $id_properti = "P0006";
+
+                //////// -- tambahan octa buat email
+                $penjual = users_sell_property::where('id_properti', $id_properti)->first();
+                $user = users::where('id_user', $penjual->id_user)->first();
+                Mail::to($user->email_user)->send(new InsertMail($user));
+
                 return view("detailProperti", ["data_properti" => $data_properti[0]]);
             }
         // }

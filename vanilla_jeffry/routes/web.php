@@ -46,9 +46,16 @@ Route::group(['middleware' => 'isLogin' ], function (){
     Route::any('/profile',"ControllerForm@profile");
     Route::any('/logout', "ControllerForm@logout");
     Route::post('/updateprofile',"ControllerForm@updateprofile");
-    Route::get('/myProperti', function () {
-        return view('myProperty');
-    });
+
     Route::any('/jualProperti', 'ControllerForm@jualProperty');
+
+    Route::get('/myProperti', "controllerJeffry@showMyProperty");
+    Route::get('/myProperti_{id}', "controllerJeffry@showmyPropertiDetail");
+    Route::get('/offerDetail_{id}', function ($id)
+    {
+        return view('offers', ["idBeli"=>$id]);
+    });
+
+    Route::post('/prosesBeli', "controllerJeffry@prosesBeli");
 
 });

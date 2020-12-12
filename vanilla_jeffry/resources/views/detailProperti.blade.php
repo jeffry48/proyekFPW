@@ -1,7 +1,3 @@
-@php
-    use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Carbon;
-@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -94,26 +90,21 @@
             border: solid lightblue 1px;
             border-radius: 10px;
         }
-        .slider{
-            overflow: auto;
-            width: 100%;
+        .usersCont{
+            padding-top: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-bottom: 10px;
+            background-color: wheat;
+            border: solid black 1px;
+            margin-top: 1px;
         }
-        .cardbox{
-            float: left;
-            width: 97%;
-            padding : 1%;
-            background-color: coral;
+        .usersCont:hover{
+            background-color: lightcoral;
+            cursor: default;
         }
-        .headerRec{
-            font-size: 16pt;
-        }
-        .contentRec{
-            float: left;
-        }
-        .picRec{
-            float: left;
-            height: 100px;
-            width: 100px;
+        .userHeader{
+            font-size: 14pt;
         }
     </style>
     <script>
@@ -147,6 +138,11 @@
         </div>
     </div>
 
+    @php
+        use App\users;
+        use App\UserBeliModel;
+    @endphp
+
     <div class="content">
         <div class="contentText">
             <div class="contentHeader">
@@ -177,73 +173,98 @@
                     </div>
                     <div class="textItem">
                         <?php
-                            $cnow = Carbon::now();
-                            $since = Carbon::parse($data_properti->tgl_terdaftar_properti);
-
-                            $diff = $since->diffInDays($cnow);
-                            // echo "<script>alert(".$diff.")</script>";
-
                             $now = time();
                             $your_date = strtotime($data_properti->tgl_terdaftar_properti);
                             $datediff = $now - $your_date;
                         ?>
-                        @if ($diff/30>1)
-                            Terdaftar : {{round($diff/30)}} bulan {{$diff%30}} hari yang lalu
-                        @elseif($diff%30==0)
-                            Terdaftar : {{round($diff/30)}} bulan yang lalu
-                        @elseif ($diff/30<1)
-                            Terdaftar : {{$diff}} hari yang lalu
+                        @if (round($datediff / (60 * 60 * 24))<30)
+                            terdaftar: {{ round($datediff / (60 * 60 * 24)) }} hari yang lalu
+                        @else
+                            terdaftar: {{ round(round($datediff / (60 * 60 * 24))/30) }} bulan yang lalu
                         @endif
                     </div>
                     <div class="textItem">
                         @if (session('loggedin')!=null)
-                            @if ($data_properti->kategori_properti=='beli')
-                                <button class="pembayaranBtn" onclick="moveTo('showPembayaranBeli_{{$data_properti->id_properti}}')">pembayaran beli</button>
+                            @if (session('seller')==null)
+                                @if ($data_properti->kategori_properti=='beli')
+                                    <button class="pembayaranBtn" onclick="moveTo('showPembayaranBeli_{{$data_properti->id_properti}}')">pembayaran beli</button>
+                                @else
+                                    <button class="pembayaranBtn" onclick="moveTo('showPembayaranKontrak_{{$data_properti->id_properti}}')">pembayaran kontrak</button>
+                                @endif
+                                @isset($rekomendasi)
+                                    <div class="textItem">
+                                        <h3>Rekomendasi</h3>
+                                        <div class="slider">
+                                            @foreach ($rekomendasi as $item)
+                                                @if ($ctr_rekom<4)
+                                                    @if ($item->id_properti!=$data_properti->id_properti)
+                                                    <div></div>
+                                                    <div class="cardbox" onclick="moveTo('properti_{{$item->id_properti}}')">
+                                                        <img src="" alt="" class="picRec">
+                                                        <div class="contentRec">
+                                                            <div class="headerRec">
+                                                                <div>{{$item->alamat_properti}}</div>
+                                                            </div>
+                                                            <div>jenis properti: {{$item->jenis_properti}}</div>
+                                                            <div>{{$item->deskripsi_properti}}</div>
+                                                            <div style="font-size: 15pt;">{{$item->harga_properti}}</div>
+                                                        </div>
+                                                    </div>
+                                                    @php
+                                                        $ctr_rekom++;
+                                                    @endphp
+                                                    @endif
+
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endisset
                             @else
-                                <button class="pembayaranBtn" onclick="moveTo('showPembayaranKontrak_{{$data_properti->id_properti}}')">pembayaran kontrak</button>
+
+                                pembelian:
+                                <br>
+                                <br>
+                                @php
+                                    session()->forget('seller');
+
+                                    $listRequest=UserBeliModel::all()
+                                    ->where('id_properti', $data_properti->id_properti)->all();
+                                    sort($listRequest);
+
+                                    $listData=[];
+
+                                    for ($i=0; $i < count($listRequest); $i++) {
+                                        $listUsers=users::all()
+                                        ->where('id_user', $listRequest[$i]->id_user)->all();
+                                        sort($listUsers);
+
+                                        array_push($listData, $listUsers[0]);
+                                    }
+                                    // dd($listData);
+                                @endphp
+                                @for ($i = 0; $i < count($listData); $i++)
+                                    <div class="usersCont" onclick="moveTo('offerDetail_{{$listRequest[$i]->id_beli}}')">
+                                        <div class="userHeader">
+                                            {{$listData[$i]->nama_user}}
+                                            <br>
+                                        </div>
+                                        @php
+                                            $listBeli=UserBeliModel::all()
+                                            ->where('id_properti', $data_properti->id_properti)
+                                            ->where('id_user', $listData[$i]->id_user)->all();
+
+                                            sort($listBeli);
+                                        @endphp
+
+                                        @for ($j = 0; $j < count($listBeli); $j++)
+                                            {{$listBeli[$j]->pesan_untuk_penjual}}
+                                        @endfor
+                                    </div>
+                                @endfor
                             @endif
                         @endif
                     </div>
-                    @php
-                        $jenis = $data_properti->jenis_properti;
-                        // echo "<script>alert(".$jenis.")</script>";
-                        $list = DB::table('properti')->where('jenis_properti', $jenis)->get();
-                        if(count($list)>0){
-                            $rekomendasi = $list;
-                        }
-                        $ctr_rekom = 0;
-                    @endphp
-
-                    @isset($rekomendasi)
-                    <div class="textItem">
-                        <h3>Rekomendasi</h3>
-                        <div class="slider">
-                            @foreach ($rekomendasi as $item)
-                                @if ($ctr_rekom<4)
-                                    @if ($item->id_properti!=$data_properti->id_properti)
-                                    <div></div>
-                                    <div class="cardbox" onclick="moveTo('properti_{{$item->id_properti}}')">
-                                        <img src="" alt="" class="picRec">
-                                        <div class="contentRec">
-                                            <div class="headerRec">
-                                                <div>{{$item->alamat_properti}}</div>
-                                            </div>
-                                            <div>jenis properti: {{$item->jenis_properti}}</div>
-                                            <div>{{$item->deskripsi_properti}}</div>
-                                            <div style="font-size: 15pt;">{{$item->harga_properti}}</div>
-                                        </div>
-                                    </div>
-                                    @php
-                                        $ctr_rekom++;
-                                    @endphp
-                                    @endif
-
-                                @endif
-                            @endforeach
-                        </div>
-                    </div>
-                    @endisset
-
                 @endisset
             </div>
         </div>
