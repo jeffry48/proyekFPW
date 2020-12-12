@@ -71,7 +71,7 @@ class BeliController extends Controller
                 $data_properti = property::all()->where('id_properti', $id_properti)->all();
                 sort($data_properti);
 
-                // $id_properti = "P0006";
+                $id_properti = "P0006";
 
                 //////// -- tambahan octa buat email
                 $penjual = users_sell_property::where('id_properti', $id_properti)->first();

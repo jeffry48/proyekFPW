@@ -122,7 +122,6 @@
             font-size: 15pt;
         }
         .searchBtn{
-            width: 5%;
             height: 30px;
         }
     </style>
@@ -157,7 +156,7 @@
                 <form action="/search" method="post" >
                     @csrf
                     <input type="text" name="search" id="" class="searchBar">
-                    <input type="submit" value="" class="searchBtn">
+                    <input type="submit" value="search" class="searchBtn">
                 </form>
             </div>
             <div class="contentTextInner">
