@@ -56,13 +56,14 @@ class ControllerForm extends Controller
             ->where('id_properti', $idCek)->all();
             sort($updateProp);
 
+            //Alex just now
+            $file = $req->file('foto'); // ngambil foto
+            $file->move('properti',$file->getClientOriginalName()); //move ke public/properti
+            $namaPic = 'properti/'.$idCek.'.'.$file->getClientOriginalExtension(); //hasil nama
+            unlink($updateProp[0]->foto_properti); //hapus file
+            rename(public_path('properti/'.$file->getClientOriginalName()), public_path($namaPic)); 
+            //Alex just now
             
-            $file = $req->file('foto');
-            $file->move('properti',$file->getClientOriginalName());
-            $namaPic = 'properti/'.$idCek.'.'.$file->getClientOriginalExtension();
-            unlink($updateProp[0]->foto_properti);
-            rename(public_path('properti/'.$file->getClientOriginalName()), public_path($namaPic));
-
             $updateProp[0]->jenis_properti=$req->jenis;
             $updateProp[0]->kategori_properti=$req->kategori;
             $updateProp[0]->deskripsi_properti=$req->deskripsi;
@@ -70,7 +71,7 @@ class ControllerForm extends Controller
             $updateProp[0]->jumlah_kamar_mandi_properti=$req->jumKamarMandi;
             $updateProp[0]->harga_properti=$req->harga;
             $updateProp[0]->tgl_terdaftar_properti=now();
-            $updateProp[0]->foto_properti=$namaPic;
+            $updateProp[0]->foto_properti=$namaPic; // ganti ini
             $updateProp[0]->view_properti=0;
             $updateProp[0]->status=1;
 
@@ -91,10 +92,13 @@ class ControllerForm extends Controller
             else{
                 $idProperti = "P0" . $countDataProperti;
             }
+
+            //Alex just now
             $file = $req->file('foto');
             $file->move('properti',$file->getClientOriginalName());
             $namaPic = 'properti/'.$idProperti.'.'.$file->getClientOriginalExtension();
             rename(public_path('properti/'.$file->getClientOriginalName()), public_path($namaPic));
+            //Alex just now
 
             $insertData = [
                 "id_properti" => $idProperti,
@@ -106,7 +110,9 @@ class ControllerForm extends Controller
                 "alamat_properti" => $req->alamat,
                 "harga_properti" => $req->harga,
                 "tgl_terdaftar_properti" => now(),
+                //Alex just now
                 "foto_properti" => $namaPic,
+                //Alex just now
                 "view_properti" => 0,
                 "status" => 1
             ];

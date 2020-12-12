@@ -204,9 +204,11 @@
                     <div class="text">
                         foto
                     </div>
+                    {{--Alex just now--}}
                     <div class="input">
                         <input type="file" name="foto" id="" accept = 'image/jpeg , image/jpg, image/png'> <br>
                     </div>
+                    {{--Alex just now--}}
 
                     <div class="text">
                         <input type="submit" value="submit" class="registerBtn">
