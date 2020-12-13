@@ -13,6 +13,8 @@ use App\Rules\UpdateProfEmail;
 use App\Rules\UpdateProfUsername;
 use App\UserBeliModel;
 use App\users_sell_property;
+use App\buktiPembelianModel;
+use App\UserKontrakRumah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 
@@ -213,21 +215,81 @@ class ControllerForm extends Controller
     {
         return view('login');
     }
+//--------------filter report admin--------------------------
+    public function filterReport(Request $req)
+    {
+        if($req->filter=='pembelian'){
+            return redirect('filterPembelianReport');
+        }else if($req->filter=='properti'){
+            return redirect('filterReportProperti');
+        }
+    }
+    public function filterReportPembelian()
+    {
+        //no 1 done
+        $bukti_pembelian = buktiPembelianModel::all();
+        $user_properti_beli = UserBeliModel::all();
+        $beli_belum_terbeli = UserBeliModel::leftJoin('bukti_pembelian', function($join) {
+            $join->on('user_properti_beli.id_beli', '=', 'bukti_pembelian.id_beli');
+          })->join('user',function($join){
+            $join->on('user_properti_beli.id_user', '=', 'user.id_user');
+          })->join('properti',function($join){
+            $join->on('user_properti_beli.id_properti', '=', 'properti.id_properti');
+          })->whereNull('bukti_pembelian.id_beli')->orderBy('user.id_user','asc')->get();
+        //   dd($beli_belum_terbeli);
+
+        $kontrak_belum_terkontrak = UserKontrakRumah::leftJoin('bukti_kontrak', function($join) {
+            $join->on('user_properti_kontrak.id_kontrak', '=', 'bukti_kontrak.id_kontrak');
+          })->join('user',function($join){
+            $join->on('user_properti_kontrak.id_user', '=', 'user.id_user');
+          })->join('properti',function($join){
+            $join->on('user_properti_kontrak.id_properti', '=', 'properti.id_properti');
+          })->whereNull('bukti_kontrak.id_terkontrak')->orderBy('user.id_user','asc')->get();
+        // dd($kontrak_belum_terkontrak);
+        //no 1 done
+
+        return view('adminViews/adminPembelianReport',["beli_belum_terbeli"=>$beli_belum_terbeli,
+        "kontrak_belum_terkontrak"=>$kontrak_belum_terkontrak]);
+    }
+    public function filterReportProperti()
+    {
+        $c = property::join('user_properti_beli', function($join){
+            $join->on('properti.id_properti', '=', 'user_properti_beli.id_properti');
+        })->join('user', function($join){
+            $join->on('user_properti_beli.id_user', '=', 'user.id_user');
+        })->where('kategori_properti','beli')->orderBy('properti.id_properti','asc')->get();
+        // dd($c);
+
+        $kontrak = property::join('user_properti_kontrak', function($join){
+            $join->on('properti.id_properti', '=', 'user_properti_kontrak.id_properti');
+        })->join('user', function($join){
+            $join->on('user_properti_kontrak.id_user', '=', 'user.id_user');
+        })->where('kategori_properti','kontrak')->orderBy('properti.id_properti','asc')->get();
+
+        return view('adminViews/adminPropertiReport', ["males"=>$c,"banget"=>$kontrak]);
+    }
+//--------------filter report admin--------------------------
 
     function cekLogin(Request $request)
     {
-        $username = $request->input('username');
-        $validatedData = $request->validate([
-            'username' => ['bail','required', new LoginUsername()],
-            'pass' => ['required' , new LoginPass($username)]
-        ], [
-            'required' => 'Field tidak boleh kosong',
-        ]);
+        if($request->input('username')=="admin" && $request->input('pass')=="admin"){
+            session(['loggedin' => "admin"]);
+            return redirect('/filterReportProperti');
+        }else{
+            $username = $request->input('username');
+            $validatedData = $request->validate([
+                'username' => ['bail','required', new LoginUsername()],
+                'pass' => ['required' , new LoginPass($username)]
+            ], [
+                'required' => 'Field tidak boleh kosong',
+            ]);
 
-        $users = users::where([["username_user",$username]])->first();
-        session(['loggedin' => $users->id_user]);
-        return redirect('/');
+            $users = users::where([["username_user",$username]])->first();
+            session(['loggedin' => $users->id_user]);
+            return redirect('/');
+        }
     }
+
     public function showProperti($idProperti)
     {
         $data_properti = property::where('id_properti', $idProperti)->first();

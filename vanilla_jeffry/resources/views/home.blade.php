@@ -131,27 +131,13 @@
         <div class="contentText">
             <div class="backgroundImg"></div>
             <div class="contentHeader">
-                Ziperto, website untuk mencari Real estate yang anda perlukan
+                Ziperto, website Real estate
             </div>
+            <br>
+            <br>
+            <br>
             <div class="contentTextInner">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veritatis ea quaerat,
-                architecto aperiam fugit neque provident quisquam.
-                Commodi odio inventore suscipit, quis rerum ad unde quisquam eveniet ut perspiciatis. Harum.
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veritatis ea quaerat,
-                architecto aperiam fugit neque provident quisquam.
-                Commodi odio inventore suscipit, quis rerum ad unde quisquam eveniet ut perspiciatis. Harum.
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veritatis ea quaerat,
-                architecto aperiam fugit neque provident quisquam.
-                Commodi odio inventore suscipit, quis rerum ad unde quisquam eveniet ut perspiciatis. Harum.
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veritatis ea quaerat,
-                architecto aperiam fugit neque provident quisquam.
-                Commodi odio inventore suscipit, quis rerum ad unde quisquam eveniet ut perspiciatis. Harum.
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veritatis ea quaerat,
-                architecto aperiam fugit neque provident quisquam.
-                Commodi odio inventore suscipit, quis rerum ad unde quisquam eveniet ut perspiciatis. Harum.
-                Commodi odio inventore suscipit, quis rerum ad unde quisquam eveniet ut perspiciatis. Harum.
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veritatis ea quaerat,
-                architecto aperiam fugit neque provident quisquam.
+                website real estate untuk pembelian, penjualan, dan kontrak properti
             </div>
 
         </div>

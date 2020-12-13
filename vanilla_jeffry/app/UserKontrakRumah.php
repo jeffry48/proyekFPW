@@ -11,7 +11,7 @@ class UserKontrakRumah extends Model
     protected $table= 'user_properti_kontrak';
     public $timestamps = false;
     public $incrementing=false;
-    protected $fillable = [
+    protected $guarded = [
         'id_kontrak'
     ];
 }

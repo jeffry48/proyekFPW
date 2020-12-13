@@ -23,6 +23,15 @@ Route::post('/cekregister', "ControllerForm@regCheck");
 Route::any('/login', "ControllerForm@showLogin");
 Route::any('/ceklogin', "ControllerForm@cekLogin");
 
+Route::any('/admin', "ControllerForm@showAdmin");
+Route::post('/filterReport', "ControllerForm@filterReport");
+
+Route::get('/filterPembelianReport', "ControllerForm@filterReportPembelian");
+Route::get('/filterReportProperti', "ControllerForm@filterReportProperti");
+
+Route::get('/adminDetailProp_{id}', function ($id) {
+    return view('adminViews/adminDetailProperti', ['id_properti'=>$id]);
+});
 ////////////////////////////////////////////////////////////////////////
 
 Route::get('/beli',"ControllerForm@indexBeli");
@@ -43,8 +52,8 @@ Route::post('search','BeliController@search');
 Route::post('kontrak_rumah','BeliController@kontrak_rumah');
 
 Route::group(['middleware' => 'isLogin' ], function (){
-    Route::any('/profile',"ControllerForm@profile");
     Route::any('/logout', "ControllerForm@logout");
+    Route::any('/profile',"ControllerForm@profile");
     Route::post('/updateprofile',"ControllerForm@updateprofile");
 
     Route::any('/jualProperti', 'ControllerForm@jualProperty');
