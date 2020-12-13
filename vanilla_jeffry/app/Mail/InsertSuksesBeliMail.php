@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class InsertMail extends Mailable
+class InsertSuksesBeliMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -35,6 +35,6 @@ class InsertMail extends Mailable
         // return $this->view('view.name');
         return $this->from("octaviuskrist@gmail.com")
                     ->subject("TES EMAIL")
-                    ->view("mail.insert_mail");
+                    ->view("mail.insert_sukses_beli_mail");
     }
 }

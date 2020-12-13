@@ -120,10 +120,8 @@
 </head>
 <body>
     @php
-        // session(['login' => 'test']);
         $user = session('loggedin');
         $activity = session('activity');
-        // echo '<script>alert("'.$user.'")</script>';
     @endphp
     <div class="header">
         <div class="header">
@@ -148,20 +146,10 @@
     <div class="content">
         <div class="contentText">
             <div class="gambarImg"></div>
-            <form action="/beli_rumah" method="get">
+            <form action="/kontrak_rumah" method="post">
                 @csrf
-
                 <h1>pembayaran</h1>
                 <hr>
-                <div class="text">
-                    Pembayaran
-                </div>
-                <div class="input">
-                    <select name="jenisPembayaran" id="" style="font-size: 16pt">
-                        <option value="cash">cash</option>
-                        <option value="kredit">kredit</option>
-                    </select>
-                </div>
                 <div class="text">
                     Pajak
                 </div>
@@ -180,22 +168,24 @@
                         echo $total;
                     ?>
                 </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
                 <div class="text">
-                    pesan untuk penjual
+                    Tanggal :
                 </div>
-                <textarea name="pesanPembeli" id="" cols="30" rows="5" class="input"></textarea> <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
+                <input type="date" id="" name="tgl_awal" class="input">
                 <div class="text">
-
+                    Durasi :
+                </div>
+                <input type="number" name="durasi" id="" class="input" placeholder="dalam bulan">
+                <div class="text">
                     <input type="hidden" name="id_properti" value="{{$data_properti->id_properti}}">
                     <input type="hidden" name="id_user" value="{{$user}}">
-                    <input type="submit" value="Beli" class="submitBtn">
+                    <input type="submit" value="kontrak" class="submitBtn">
                 </div>
-            </form>
         </div>
     </div>
 </body>

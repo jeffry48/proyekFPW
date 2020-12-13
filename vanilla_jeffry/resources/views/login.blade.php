@@ -138,11 +138,19 @@
                         username
                     </div>
                     <input type="text" name="username" id="" class="input"> <br>
+                    @error('username')
+                        <div class="text" style="color: red"></div>
+                        <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                    @enderror
 
                     <div class="text">
                         password
                     </div>
                     <input type="password" name="pass" id="" class="input"> <br>
+                    @error('pass')
+                        <div class="text" style="color: red"></div>
+                        <div style="color:red; font-weight:bold; font-size: 12pt;" class="input">{{$message}}</div><br>
+                    @enderror
                     <input type="submit" value="login" class="registerBtn">
                 </form>
 

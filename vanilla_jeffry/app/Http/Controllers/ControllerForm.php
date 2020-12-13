@@ -13,13 +13,31 @@ use App\Rules\UpdateProfEmail;
 use App\Rules\UpdateProfUsername;
 use App\UserBeliModel;
 use App\users_sell_property;
+use App\buktiPembelianModel;
+use App\UserKontrakRumah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+
 class ControllerForm extends Controller
 {
     //octa
     public function jualProperty(Request $req)
     {
+        $validateData=[
+            'jumRuangan'=>['required'],
+            'jumKamarMandi'=>['required'],
+            'alamat'=>['required'],
+            'harga'=>['required'],
+        ];
+        $customMessage=[
+            'required'=>':attribute harus terisi',
+        ];
+        if($req->jenis=='tanah'&&($req->jumRuangan!=0||$req->jumKamarmandi!=0)){
+            session(['pesan'=>'ada']);
+            return redirect('jual');
+        }
+        $this->validate($req, $validateData, $customMessage);
+
         $data_properti = property::all();
         $countDataPropertiJual = users_sell_property::count();
         $countDataPropertiJual++;
@@ -61,9 +79,9 @@ class ControllerForm extends Controller
             $file->move('properti',$file->getClientOriginalName()); //move ke public/properti
             $namaPic = 'properti/'.$idCek.'.'.$file->getClientOriginalExtension(); //hasil nama
             unlink($updateProp[0]->foto_properti); //hapus file
-            rename(public_path('properti/'.$file->getClientOriginalName()), public_path($namaPic)); 
+            rename(public_path('properti/'.$file->getClientOriginalName()), public_path($namaPic));
             //Alex just now
-            
+
             $updateProp[0]->jenis_properti=$req->jenis;
             $updateProp[0]->kategori_properti=$req->kategori;
             $updateProp[0]->deskripsi_properti=$req->deskripsi;
@@ -125,6 +143,7 @@ class ControllerForm extends Controller
                 "id_properti" => $idProperti,
                 "preparasi_properti_jual" => $req->preparasi
             ];
+
             users_sell_property::create($insertData);
         }
 
@@ -133,12 +152,12 @@ class ControllerForm extends Controller
 
     // Adrian //////////////////////////////////////////////////////////////////
     public function indexBeli(){
-        $data_properti = property::where("kategori_properti","Beli")->get();
+        $data_properti = property::where("kategori_properti","Beli")->where('status', 1)->get();
         session(['activity' => 'Beli']);
         return view("beliRumah", ["data_properti" => $data_properti]);
     }
     public function indexKontrak(){
-        $data_properti = property::where("kategori_properti","Kontrak")->get();
+        $data_properti = property::where("kategori_properti","Kontrak")->where('status', 1)->get();
         session(['activity' => 'Kontrak']);
         return view("beliRumah", ["data_properti" => $data_properti]);
     }
@@ -197,23 +216,72 @@ class ControllerForm extends Controller
         return view('login');
     }
 
-    function cekLogin(Request $request){
-        $username = $request->input('username');
-        $validatedData = $request->validate([
-            'username' => ['bail','required', new LoginUsername()],
-            'pass' => ['required' , new LoginPass($username)]
-        ], [
-            'required' => 'Field tidak boleh kosong',
-        ]);
+    public function showAdmin()
+    {
+        //no 1 done
+        $bukti_pembelian = buktiPembelianModel::all();
+        $user_properti_beli = UserBeliModel::all();
+        $beli_belum_terbeli = UserBeliModel::leftJoin('bukti_pembelian', function($join) {
+            $join->on('user_properti_beli.id_beli', '=', 'bukti_pembelian.id_beli');
+          })->join('user',function($join){
+            $join->on('user_properti_beli.id_user', '=', 'user.id_user');
+          })->join('properti',function($join){
+            $join->on('user_properti_beli.id_properti', '=', 'properti.id_properti');
+          })->whereNull('bukti_pembelian.id_beli')->orderBy('user.id_user','asc')->get();
+        //   dd($beli_belum_terbeli);
 
-        $users = users::where([["username_user",$username]])->first();
-        // Cookie::queue("loggedin", json_encode($users->id_user), 360);
-        session(['loggedin' => $users->id_user]);
-        return redirect('/');
+        $kontrak_belum_terkontrak = UserKontrakRumah::leftJoin('bukti_kontrak', function($join) {
+            $join->on('user_properti_kontrak.id_kontrak', '=', 'bukti_kontrak.id_kontrak');
+          })->join('user',function($join){
+            $join->on('user_properti_kontrak.id_user', '=', 'user.id_user');
+          })->join('properti',function($join){
+            $join->on('user_properti_kontrak.id_properti', '=', 'properti.id_properti');
+          })->whereNull('bukti_kontrak.id_terkontrak')->orderBy('user.id_user','asc')->get();
+        // dd($kontrak_belum_terkontrak);
+        //no 1 done
+
+
+        $c = property::join('user_properti_beli', function($join){
+            $join->on('properti.id_properti', '=', 'user_properti_beli.id_properti');
+        })->join('user', function($join){
+            $join->on('user_properti_beli.id_user', '=', 'user.id_user');
+        })->where('kategori_properti','beli')->orderBy('properti.id_properti','asc')->get();
+        // dd($c);
+
+        $kontrak = property::join('user_properti_kontrak', function($join){
+            $join->on('properti.id_properti', '=', 'user_properti_kontrak.id_properti');
+        })->join('user', function($join){
+            $join->on('user_properti_kontrak.id_user', '=', 'user.id_user');
+        })->where('kategori_properti','kontrak')->orderBy('properti.id_properti','asc')->get();
+
+        return view('home_admin',["beli_belum_terbeli"=>$beli_belum_terbeli,
+        "kontrak_belum_terkontrak"=>$kontrak_belum_terkontrak,"males"=>$c,"banget"=>$kontrak]);
+    }
+
+    function cekLogin(Request $request)
+    {
+        if($request->input('username')=="admin" && $request->input('pass')=="admin"){
+            session(['loggedin' => "admin"]);
+            return redirect('/admin');
+        }else{
+            $username = $request->input('username');
+            $validatedData = $request->validate([
+                'username' => ['bail','required', new LoginUsername()],
+                'pass' => ['required' , new LoginPass($username)]
+            ], [
+                'required' => 'Field tidak boleh kosong',
+            ]);
+    
+            $users = users::where([["username_user",$username]])->first();
+            session(['loggedin' => $users->id_user]);
+            return redirect('/');
+        }
     }
     public function showProperti($idProperti)
     {
         $data_properti = property::where('id_properti', $idProperti)->first();
+        $data_properti->view_properti++;
+        $data_properti->save();
         return view("detailProperti", ["data_properti" => $data_properti]);
     }
 
@@ -225,7 +293,8 @@ class ControllerForm extends Controller
         return view('profile',["user"=>$user]);
     }
 
-    function updateprofile(Request $request){
+    function updateprofile(Request $request)
+    {
         $validatedData = $request->validate([
             "name" => ["required", "max:24"],
             "email" => ["required", "regex:/^.+@.+$/i", "regex:/^.*(?=.*[.]).*$/", new UpdateProfEmail()],

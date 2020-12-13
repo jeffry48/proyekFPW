@@ -1,7 +1,5 @@
 <?php
 
-use App\Mail\InsertMail;
-use App\Users;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -24,7 +22,7 @@ Route::any('/register', "ControllerForm@showRegister");
 Route::post('/cekregister', "ControllerForm@regCheck");
 Route::any('/login', "ControllerForm@showLogin");
 Route::any('/ceklogin', "ControllerForm@cekLogin");
-
+Route::any('/admin', "ControllerForm@showAdmin");
 ////////////////////////////////////////////////////////////////////////
 
 Route::get('/beli',"ControllerForm@indexBeli");
@@ -48,12 +46,24 @@ Route::group(['middleware' => 'isLogin' ], function (){
     Route::any('/profile',"ControllerForm@profile");
     Route::any('/logout', "ControllerForm@logout");
     Route::post('/updateprofile',"ControllerForm@updateprofile");
-    Route::get('/myProperti', function () {
-        return view('myProperty');
-    });
+
     Route::any('/jualProperti', 'ControllerForm@jualProperty');
 
+    Route::get('/myPropertiBeli', "controllerJeffry@showMyPropertyBeli");
+    Route::get('/myPropertiKontrak', "controllerJeffry@showMyPropertyKontrak");
+
+    Route::get('/myProperti_{id}', "controllerJeffry@showmyPropertiDetail");
+    Route::get('/offerDetailBeli_{id}', function ($id)
+    {
+        return view('offersBeli', ["idBeli"=>$id]);
+    });
+    Route::get('/offerDetailKontrak_{id}', function ($id)
+    {
+        return view('offersKontrak', ["idKontrak"=>$id]);
+    });
+
+    Route::post('/filterMyProp', "controllerJeffry@filterMyProp");
+    Route::post('/prosesBeli', "controllerJeffry@prosesBeli");
+    Route::post('/prosesKontrak', "controllerJeffry@prosesKontrak");
+
 });
-// Route::any('/tes_email', function(){
-//     return new InsertMail(Users::first());
-// });

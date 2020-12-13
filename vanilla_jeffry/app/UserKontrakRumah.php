@@ -10,7 +10,8 @@ class UserKontrakRumah extends Model
     protected $primaryKey = 'id_kontrak';
     protected $table= 'user_properti_kontrak';
     public $timestamps = false;
-    protected $fillable = [
+    public $incrementing=false;
+    protected $guarded = [
         'id_kontrak'
     ];
 }
