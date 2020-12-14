@@ -36,7 +36,7 @@ class InsertSuksesKontrakMail extends Mailable
     public function build()
     {
         // return $this->view('view.name');
-        return $this->from("octaviuskrist@gmail.com")
+        return $this->from("proyekFPW@gmail.com")
                     ->subject("TES EMAIL")
                     ->view("mail.insert_sukses_kontrak_mail");
     }
