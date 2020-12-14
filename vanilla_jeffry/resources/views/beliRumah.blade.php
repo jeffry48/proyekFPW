@@ -158,14 +158,21 @@
                     <input type="text" name="search" id="" class="searchBar">
                     <input type="submit" value="search" class="searchBtn">
                 </form>
+                <button><a href="advancesearch">Advance Search</a></button>
             </div>
             <div class="contentTextInner">
                 <div class="contentHeader">
                     @if ($data_properti!=null)
                         @if ($data_properti[0]->kategori_properti=='beli')
                             <h1>beli properti</h1>
+                            @php
+                                session(['activity'=>'beli'])
+                            @endphp
                         @else
                             <h1>kontrak properti</h1>
+                            @php
+                                session(['activity'=>'kontrak'])
+                            @endphp
                         @endif
                     @endif
 

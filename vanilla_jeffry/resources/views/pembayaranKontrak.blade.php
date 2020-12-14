@@ -180,7 +180,7 @@
                 <div class="text">
                     Durasi :
                 </div>
-                <input type="number" name="durasi" id="" class="input" placeholder="dalam bulan">
+                <input type="number" name="durasi" id="" class="input" placeholder="dalam tahun">
                 <div class="text">
                     <input type="hidden" name="id_properti" value="{{$data_properti->id_properti}}">
                     <input type="hidden" name="id_user" value="{{$user}}">

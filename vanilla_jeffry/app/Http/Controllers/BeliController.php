@@ -122,6 +122,7 @@ class BeliController extends Controller
         $id_user = $request->id_user;
         $durasi = $request->durasi;
         $tgl_awal = Carbon::parse($request->tgl_awal);
+        // dd(Carbon::parse($request->tgl_awal));
 
         $properti = property::find($id_properti);
         $harga = $properti->harga_properti;
@@ -144,9 +145,9 @@ class BeliController extends Controller
         $data->id_kontrak = $id_kontrak;
         $data->id_user = $id_user;
         $data->id_properti = $id_properti;
-        $data->tgl_awal = $tgl_awal;
+        $data->tgl_awal = Carbon::parse($request->tgl_awal);
         $data->durasi_kontrak = $durasi;
-        $data->tgl_akhir = $tgl_awal->addDays($durasi);
+        $data->tgl_akhir = $tgl_awal->addYears($durasi);
         $data->tgl_kontrak = now();
         $data->harga = $harga*$durasi;
         $data->save();

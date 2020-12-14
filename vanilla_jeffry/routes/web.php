@@ -49,6 +49,13 @@ Route::get('showPembayaranKontrak_{id_properti}', "controllerJeffry@showPembayar
 
 Route::get('beli_rumah','BeliController@beli_rumah');
 Route::post('search','BeliController@search');
+
+Route::get('/advancesearch', function ()
+{
+    return view('search');
+});
+Route::post('advancesearchdb', 'SearchController@search');
+
 Route::post('kontrak_rumah','BeliController@kontrak_rumah');
 
 Route::group(['middleware' => 'isLogin' ], function (){
