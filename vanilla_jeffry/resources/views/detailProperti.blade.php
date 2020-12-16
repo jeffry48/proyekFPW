@@ -224,7 +224,7 @@
                                 @php
                                     $jenis = $data_properti->jenis_properti;
                                     // echo "<script>alert(".$jenis.")</script>";
-                                    $list = DB::table('properti')->where('jenis_properti', $jenis)->get();
+                                    $list = DB::table('properti')->where('jenis_properti', $jenis)->where('status', 1)->get();
                                     if(count($list)>0){
                                         $rekomendasi = $list;
                                     }
